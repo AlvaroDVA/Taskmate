@@ -2,7 +2,7 @@ import 'package:uuid/uuid.dart';
 
 class User {
 
-  Uuid idUser;
+  String idUser;
   String username;
   String email;
   String avatarUri;
@@ -13,4 +13,21 @@ class User {
     required this.email,
     required this.avatarUri
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "idUser" : idUser,
+      "username" : username,
+      "email" : email,
+      "avatarUri" : avatarUri
+    };
+  }
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    idUser: json['idUser'],
+    username: json['username'],
+    email: json['email'],
+    avatarUri: json['avatarUri']
+  );
+
 }

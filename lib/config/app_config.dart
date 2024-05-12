@@ -5,15 +5,21 @@ import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
 import 'package:taskmate_app/themes/theme.dart';
 
+
 class AppConfig {
 
-  String rutaArchivo = '${Directory.current.path}/config.properties';
-  late Properties properties;
+   String rutaArchivo = '${Directory.current.path}\\assets\\config.properties';
+   late Properties properties;
 
-  late CustomTheme theme;
-  late String language;
+   late CustomTheme theme;
+   late String language;
 
-  late String actualUser;
+   late String actualUser;
+   late String urlApi;
+
+   late String localDataUrl;
+
+   late Map<String, dynamic> errorCodes;
 
   AppConfig() {
     loadProperties();
@@ -24,9 +30,23 @@ class AppConfig {
 
     language = properties.get('language') ?? "English";
     theme = CustomTheme.fromProperties(properties.get('theme') ?? "Light");
-
     actualUser = properties.get('actualUser') ?? "None";
+    urlApi = properties.get('urlApi') ?? "http://taskmate.ddns.net:15556";
+
+    localDataUrl = _getLocalDataUrl();
+
+    errorCodes = json.decode(await rootBundle.loadString('assets/errors_code.json'))["usersErrors"];
 
   }
+
+   String _getLocalDataUrl() {
+     if (Platform.isAndroid) {
+       return '/data/data/taskmate/files';
+     } else if (Platform.isWindows) {
+       return '${Platform.environment['LOCALAPPDATA']}\\taskmate\\';
+     } else {
+       throw UnsupportedError('Este sistema operativo no es compatible');
+     }
+   }
 
 }

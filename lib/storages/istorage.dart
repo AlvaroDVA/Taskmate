@@ -1,4 +1,4 @@
 abstract class IStorage <T> {
-  Map<String, dynamic> toJson(T item);
-  T fromJson (Map<String, dynamic> json);
+  List<T> loadLocalData ();
+  bool saveLocalData(List<T> list);
 }

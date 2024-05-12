@@ -6,33 +6,16 @@ import '../models/task.dart';
 class DayStorage implements IStorage<Day> {
 
   @override
-  fromJson(Map<String, dynamic> json) {
-    List<Task> tasks = [];
-
-    if (json['todayTask'] != null) {
-      json['elementList'].forEach((elementJson) {
-        tasks.add(Task.fromJson(elementJson));
-      });
-    }
-
-    return Day(
-      date: json['date'],
-      todayTasks: tasks,
-    );
+  List<Day> loadLocalData() {
+    // TODO: implement loadLocalData
+    throw UnimplementedError();
   }
 
   @override
-  Map<String, dynamic> toJson(Day item) {
-
-    List<Map<String, dynamic>> elements = [];
-    for (var task in item.todayTasks) {
-      elements.add(task.toJson());
-    }
-
-    return {
-      'date' : item.date,
-      'todayTasks' : elements
-    };
+  bool saveLocalData(List<Day> list) {
+    // TODO: implement saveLocalData
+    throw UnimplementedError();
   }
+
 
 }
