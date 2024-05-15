@@ -10,16 +10,13 @@ class AuthState extends ChangeNotifier {
   User? _currentUser;
   bool isLogged = false;
 
+  String? get errorMessage => _errorMessage;
+  User? get currentUser => _currentUser;
+
   AuthState() {
     checkLoginStatus();
   }
 
-  // Getter para obtener el mensaje de error
-  String? get errorMessage => _errorMessage;
-
-  User? get currentUser => _currentUser;
-
-  // Setter para actualizar el mensaje de error
   void setErrorMessage(String? message) {
     _errorMessage = message;
     notifyListeners();
@@ -33,6 +30,7 @@ class AuthState extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('idUser', user.idUser);
     await prefs.setString('currentUser', user.username);
+    await prefs.setString('password', user.password);
     await prefs.setString('email', user.email);
     await prefs.setString('avatarUri', await user.avatarString());
     await prefs.setBool('isLoggedIn', true);
@@ -47,6 +45,7 @@ class AuthState extends ChangeNotifier {
       _currentUser = User(
         idUser: prefs.getString('idUser')!,
         username: prefs.getString('currentUser')!,
+        password: prefs.getString('password')!,
         email: prefs.getString('email')!,
         avatar: await Utils.fileFromBytes(prefs.getString('avatarUri')),
       );

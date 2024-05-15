@@ -5,6 +5,7 @@ import 'package:taskmate_app/controllers/user_controller.dart';
 import 'package:taskmate_app/main.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:taskmate_app/ui/pages/day_task_screen.dart';
 import 'package:taskmate_app/ui/pages/register_screen.dart';
 
 import '../../config/app_config.dart';
@@ -103,6 +104,7 @@ class LoginScreen extends StatelessWidget {
         User(
           idUser : res['_id'],
           username : res['username'],
+          password: res['password'],
           email : res['email'],
           avatar: await Utils.fileFromBytes(res['avatar']),
         )
@@ -110,7 +112,7 @@ class LoginScreen extends StatelessWidget {
     authState.setErrorMessage(null);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: 'Contador',)),
+      MaterialPageRoute(builder: (context) => DayTaskScreen()),
     );
   }
 }

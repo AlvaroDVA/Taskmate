@@ -17,6 +17,7 @@ import '../widgets/forms_widgets/error_box.dart';
 import '../widgets/forms_widgets/form_submit_button.dart';
 import '../widgets/forms_widgets/link_form.dart';
 import '../widgets/forms_widgets/text_block_form.dart';
+import 'day_task_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   
@@ -136,6 +137,7 @@ class RegisterScreen extends StatelessWidget {
         User(
           idUser : res['_id'],
           username : res['username'],
+          password: res['password'],
           email : res['email'],
           avatar: await Utils.fileFromBytes(res['avatar']),
         )
@@ -143,7 +145,7 @@ class RegisterScreen extends StatelessWidget {
     authState.setErrorMessage(null);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: 'Contador',)),
+      MaterialPageRoute(builder: (context) => DayTaskScreen()),
     );
   }
 

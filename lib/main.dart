@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
+import 'package:taskmate_app/controllers/day_controller.dart';
 import 'package:taskmate_app/controllers/user_controller.dart';
 import 'package:taskmate_app/rest/user_api_rest.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/services/user_service.dart';
 import 'package:taskmate_app/states/auth_state.dart';
+import 'package:taskmate_app/states/tasks_loaded_state.dart';
+import 'package:taskmate_app/ui/pages/day_task_screen.dart';
 import 'package:taskmate_app/ui/pages/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -24,8 +27,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authState = Provider.of<AuthState>(context);
+    AuthState authState = Provider.of<AuthState>(context);
     AppConfig appConfig = ServiceLocator.appConfig;
+    ServiceLocator.setAuthState(authState);
     return MultiProvider(
         providers: [
            Provider<AppConfig>(
@@ -39,6 +43,12 @@ class MyApp extends StatelessWidget {
           ),
           Provider<UserApiRest>(
             create: (_) => ServiceLocator.userApiRest,
+          ),
+          Provider<DayController>(
+            create: (_) => ServiceLocator.dayController,
+          ),
+          ChangeNotifierProvider<TasksLoadedState>(
+            create: (_) => TasksLoadedState(),
           )
         ],
         child: MaterialApp(
@@ -57,7 +67,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: appConfig.theme.primaryColor),
             useMaterial3: true,
           ),
-          home: authState.isLogged ? MyHomePage(title: "TEST") : LoginScreen(),
+          home: authState.isLogged ? DayTaskScreen() : LoginScreen(),
         ),
     );
   }

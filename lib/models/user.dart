@@ -10,10 +10,12 @@ class User {
   String username;
   String email;
   File avatar;
+  String password;
 
   User ( {
     required this.idUser,
     required this.username,
+    required this.password,
     required this.email,
     required this.avatar
   });

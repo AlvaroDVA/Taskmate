@@ -3,7 +3,7 @@ import 'elementTasks/element_task.dart';
 
 class Task {
 
-  BigInt idTask;
+  int idTask;
   String title;
   bool isChecked;
   ColorTask hexColor;
@@ -18,7 +18,6 @@ class Task {
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
-    // Convertir la lista de elementos del JSON a una lista de objetos ElementTask
     List<ElementTask> elements = [];
     if (json['elementList'] != null) {
       json['elementList'].forEach((elementJson) {
@@ -27,10 +26,10 @@ class Task {
     }
 
     return Task(
-      idTask: BigInt.parse(json['idTask']),
+      idTask: json['idTask'],
       title: json['title'],
       isChecked: json['isChecked'],
-      hexColor: ColorTask.values.firstWhere((color) => color.hex == json['hexColor']),
+      hexColor: ColorTask.values.firstWhere((color) => color.hex == json['colorHex']),
       elementList: elements,
     );
   }
