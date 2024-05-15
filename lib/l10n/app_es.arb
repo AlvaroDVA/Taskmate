@@ -1,0 +1,33 @@
+{
+  "password": "Contraseña",
+  "username": "Usuario",
+  "unknownError": "Código de error desconocido",
+  "emptyFields": "Por favor, completa todos los campos.",
+  "loginText" : "Iniciar Sesión",
+  "registerText" : "Registrarse",
+  "email" : "Correo Electrónico",
+  "repeatPassword" : "Confirme la Contraseña",
+  "notAccount" : "¿No tienes cuenta? ",
+  "loginUserTextNotLink" : "¿Ya tienes una cuenta? ",
+  "registerUserLink" : "Regístrate Aquí ",
+  "loginUserLink" : "Iniciar sesión aquí ",
+
+  "err1001": "La ID de este usuario ya existe",
+  "err1002": "Ya existe un usuario con este email",
+  "err1003": "Ya existe un usuario con este usuario",
+  "err1004": "Las contraseñas no coinciden",
+  "err1020": "Credenciales Incorrectas",
+  "err1021": "Email o Usuario no enviado",
+  "err1022": "Contraseña no enviada",
+  "err1023": "Id no enviada",
+  "err1030": "El cuerpo del Json no esta correctamente formado",
+  "err1050": "Usuario no encontrado",
+  "err1051": "Usuario no modificado",
+  "err1052": "Usuario no eliminado",
+  "err1053": "El Email y Usuario no pueden ser cambiados",
+  "err1060": "Esta tarea ya existe",
+  "err1061": "Faltan campos en el JSON",
+  "err1062": "Tarea no modificada",
+  "err1063": "Tarea no eliminada"
+
+}

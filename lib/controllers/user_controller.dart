@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:provider/provider.dart';
 
 import '../services/service_locator.dart';
@@ -10,5 +12,12 @@ class UserController {
   Future<Map<String, dynamic>> loginUser(String username, String password) async {
 
     return await _userService.LoginUser(username, password);
+  }
+
+  Future<Map<String, dynamic>> registerUser (String uuid, String username,
+    String password, String email, File avatar) async {
+    return await _userService.registerUser(
+      uuid,username,password,email,avatar
+    );
   }
 }

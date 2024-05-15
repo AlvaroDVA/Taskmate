@@ -8,4 +8,6 @@ class LightTheme implements CustomTheme {
   Color lightColor = const Color(0xffFFF1BF);
   Color lightColor2 = const Color(0xffFFE380);
   Color auxColor = const Color(0xffFFFFFF);
+  Color darkAuxColor = const Color(0xff000000);
+  Color errorColor = const Color(0xffda0c0c);
 }

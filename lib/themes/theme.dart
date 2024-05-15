@@ -9,6 +9,8 @@ abstract class CustomTheme {
   late Color lightColor;
   late Color lightColor2;
   late Color auxColor;
+  late Color errorColor;
+  late Color darkAuxColor;
 
 
   factory CustomTheme.fromProperties(String theme) {

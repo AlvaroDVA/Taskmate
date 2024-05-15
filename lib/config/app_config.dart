@@ -19,7 +19,6 @@ class AppConfig {
 
    late String localDataUrl;
 
-   late Map<String, dynamic> errorCodes;
 
   AppConfig() {
     loadProperties();
@@ -34,9 +33,6 @@ class AppConfig {
     urlApi = properties.get('urlApi') ?? "http://taskmate.ddns.net:15556";
 
     localDataUrl = _getLocalDataUrl();
-
-    errorCodes = json.decode(await rootBundle.loadString('assets/errors_code.json'))["usersErrors"];
-
   }
 
    String _getLocalDataUrl() {

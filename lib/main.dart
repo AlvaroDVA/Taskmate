@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/controllers/user_controller.dart';
@@ -7,12 +8,14 @@ import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/services/user_service.dart';
 import 'package:taskmate_app/states/auth_state.dart';
 import 'package:taskmate_app/ui/pages/login_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(
     ChangeNotifierProvider(
     create: (_) => AuthState(),
     child: MyApp(),
+
   ),);
 }
 
@@ -40,6 +43,16 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Flutter Demo',
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('es'),
+          ],
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: appConfig.theme.primaryColor),
             useMaterial3: true,
@@ -67,14 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String state = "uihui";
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +112,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed:() {
+            Provider.of<AuthState>(context, listen: false).logoutUser();
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+          );
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),

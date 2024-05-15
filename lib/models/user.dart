@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class User {
@@ -5,29 +9,19 @@ class User {
   String idUser;
   String username;
   String email;
-  String avatarUri;
+  File avatar;
 
   User ( {
     required this.idUser,
     required this.username,
     required this.email,
-    required this.avatarUri
+    required this.avatar
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      "idUser" : idUser,
-      "username" : username,
-      "email" : email,
-      "avatarUri" : avatarUri
-    };
+  Future<String> avatarString() async {
+    List<int> avatarBytes = await avatar.readAsBytes();
+    String avatarBase64 = base64Encode(avatarBytes);
+    return avatarBase64;
   }
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    idUser: json['idUser'],
-    username: json['username'],
-    email: json['email'],
-    avatarUri: json['avatarUri']
-  );
 
 }

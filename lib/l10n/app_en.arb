@@ -1,0 +1,33 @@
+{
+  "password": "Password",
+  "username": "Username",
+  "unknownkError" : "Unknown error code",
+  "emptyFields" : "Please, Complete all fields",
+  "loginText" : "Login",
+  "registerText" : "Register",
+  "email" : "Email",
+  "repeatPassword" : "Repeat password",
+  "notAccount" : "Don`t have an account? ",
+  "loginUserTextNotLink" : "Already have an account? ",
+  "registerUserLink" : "Register here! ",
+  "loginUserLink" : "Login here! ",
+
+  "err1001": "UserID already exists",
+  "err1002": "User Email already exists",
+  "err1003": "User Name already exists",
+  "err1004": "Las contraseñas no coinciden",
+  "err1020": "Invalid Credentials",
+  "err1021": "Email or User not send",
+  "err1022": "Password not send",
+  "err1023": "Id not send",
+  "err1030": "Incorrect information in Json Body",
+  "err1050": "User not found",
+  "err1051": "User not changed",
+  "err1052": "User not deleted",
+  "err1053": "User Email, Name and Id can't be changed",
+  "err1060": "This task already exists",
+  "err1061": "Missing Json fields",
+  "err1062": "Task has not changed",
+  "err1063": "Task has not deleted"
+
+}

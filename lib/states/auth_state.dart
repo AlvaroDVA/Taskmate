@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/user.dart';
+import '../utils/utils.dart';
 
 class AuthState extends ChangeNotifier {
   String? _errorMessage;
@@ -19,7 +20,7 @@ class AuthState extends ChangeNotifier {
   User? get currentUser => _currentUser;
 
   // Setter para actualizar el mensaje de error
-  void setErrorMessage(String message) {
+  void setErrorMessage(String? message) {
     _errorMessage = message;
     notifyListeners();
   }
@@ -33,7 +34,7 @@ class AuthState extends ChangeNotifier {
     await prefs.setString('idUser', user.idUser);
     await prefs.setString('currentUser', user.username);
     await prefs.setString('email', user.email);
-    await prefs.setString('avatarUri', user.avatarUri);
+    await prefs.setString('avatarUri', await user.avatarString());
     await prefs.setBool('isLoggedIn', true);
   }
 
@@ -47,7 +48,7 @@ class AuthState extends ChangeNotifier {
         idUser: prefs.getString('idUser')!,
         username: prefs.getString('currentUser')!,
         email: prefs.getString('email')!,
-        avatarUri: prefs.getString('avatarUri')!,
+        avatar: await Utils.fileFromBytes(prefs.getString('avatarUri')),
       );
     }
 
