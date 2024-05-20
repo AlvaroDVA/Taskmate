@@ -7,6 +7,7 @@ import 'package:taskmate_app/models/elementTasks/image_element.dart';
 import 'package:taskmate_app/models/elementTasks/sublist_element.dart';
 import 'package:taskmate_app/models/elementTasks/text_element.dart';
 import 'package:taskmate_app/models/elementTasks/video_element.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/elementTasks/sublist.dart';
 

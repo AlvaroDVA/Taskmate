@@ -12,6 +12,10 @@
   "registerUserLink" : "Regístrate Aquí ",
   "loginUserLink" : "Iniciar sesión aquí ",
   "tasksNotLoadedError" : "Ha ocurrido un error al leer las tareas. Vuelva a reintentarlo ",
+  "elementTypeNotExist" : "Se ha introducido un elemento que no deberia existe",
+  "textFieldHint" : "Escribe aquí",
+  "imageSelectorText" : "Seleccione una imagen",
+  "videoSelectorText" : "Seleccione un video",
 
   "err1001": "La ID de este usuario ya existe",
   "err1002": "Ya existe un usuario con este email",

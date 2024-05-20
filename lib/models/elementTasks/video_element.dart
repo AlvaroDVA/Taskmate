@@ -5,7 +5,7 @@ import 'package:taskmate_app/models/elementTasks/element_task.dart';
 
 class VideoElement extends ElementTask {
 
-  File video;
+  File? video;
 
   VideoElement({
     required super.elementId,
@@ -15,12 +15,12 @@ class VideoElement extends ElementTask {
 
   @override
   Map<String, dynamic> toJson() {
-    List<int> videoBytes = video.readAsBytesSync();
+    List<int>? videoBytes = video?.readAsBytesSync();
 
     return {
       "elementId" : elementId,
       "taskOrder" : taskOrder,
-      "video" : base64Encode(videoBytes),
+      "video" : base64Encode(videoBytes!),
     };
   }
 

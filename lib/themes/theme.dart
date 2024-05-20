@@ -1,5 +1,6 @@
-import 'dart:ui';
 
+
+import 'package:flutter/material.dart';
 import 'package:taskmate_app/themes/light_theme.dart';
 
 abstract class CustomTheme {
@@ -12,6 +13,11 @@ abstract class CustomTheme {
   late Color errorColor;
   late Color darkAuxColor;
 
+  late TextStyle title;
+  late TextStyle subtitle;
+  late TextStyle text;
+  late TextStyle diamongSelectedText;
+  late TextStyle diamongNotSelectedText;
 
   factory CustomTheme.fromProperties(String theme) {
     if (theme == "Light") {

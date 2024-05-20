@@ -18,3 +18,12 @@ class TaskJsonException extends TaskException {
   }
 
 }
+
+class TaskElementNotExist extends TaskException {
+  TaskElementNotExist(super.message);
+
+  @override
+  String toString() {
+    return "TaskElementNotExist : $message";
+  }
+}

@@ -5,11 +5,15 @@ import 'package:intl/intl.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/controllers/day_controller.dart';
+import 'package:taskmate_app/enums/color_task.dart';
 import 'package:taskmate_app/models/day.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:taskmate_app/ui/widgets/task_widget.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../models/task.dart';
 import '../../states/auth_state.dart';
@@ -18,88 +22,83 @@ import 'login_screen.dart';
 class DayTaskScreen extends StatefulWidget {
 
   @override
-  State<StatefulWidget> createState() => _DayTaskScreenTask();
+  State<StatefulWidget> createState() => _DayTaskScreenState();
 
 }
 
-class _DayTaskScreenTask extends State<DayTaskScreen> {
+class _DayTaskScreenState extends State<DayTaskScreen> {
   final DayController dayController = ServiceLocator.dayController;
   final AuthState authState = ServiceLocator.authState;
-  List<Task> todayTasks = [];
   late TasksLoadedState tasksLoadedState;
+  final AppConfig appConfig = ServiceLocator.appConfig;
   bool firstLoad = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadTasks();
-    });
   }
 
-  void loadTasks() async{
+  void loadTasks() async {
     if (authState.isLogged) {
-      var day = await dayController.loadDayTasks(authState.currentUser!, tasksLoadedState.currentDay.date);
-      todayTasks = day.todayTasks;
+      var day = await dayController.loadDayTasks(
+          authState.currentUser!, tasksLoadedState.currentDay.date);
       if (!day.loaded) {
-        tasksLoadedState.setErrorMessage(AppLocalizations.of(context)!.tasksNotLoadedError);
+        tasksLoadedState.setErrorMessage(
+            AppLocalizations.of(context)!.tasksNotLoadedError);
       } else {
         tasksLoadedState.setErrorMessage(null);
       }
     }
-    setState(() {
-      todayTasks = tasksLoadedState.currentDay.todayTasks;
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-
-    const double padding = 20.0;
-
-    if (firstLoad) {
+    if(firstLoad) {
       tasksLoadedState = Provider.of<TasksLoadedState>(context);
-      firstLoad = false;
     }
+
     return Scaffold(
+      // TODO Cambiador de dias
       appBar: AppBar(
-        title: Text('Day Task Screen'),
+        title: Center(child: Text('Day Task Screen')),
+        backgroundColor: appConfig.theme.secondaryColor,
       ),
-      body: Center(
+      body: Container(
+        color: appConfig.theme.primaryColor,
         child: Consumer<TasksLoadedState>(
-          builder: (context, tasksLoadedState, child) {
+          builder: (BuildContext context, TasksLoadedState tasksLoadedState, Widget? child) {
             if (tasksLoadedState.currentDay.loaded) {
-              return SingleChildScrollView(
-                child: Column(
-                  children: tasksLoadedState.currentDay.todayTasks.map((task) {
-                    return  Padding(
-                      padding: const EdgeInsets.all(padding),
-                      child: Container(
-                        color: Color(int.parse('0xff${task.hexColor.hex}')),
-                          child: SizedBox(
-                              child: Text(task.title.toString()))
-                      ),
-                    );
-                  }).toList(),
-                ),
+              return Center(
+                  child : ListView.separated(
+                      itemCount: tasksLoadedState.currentDay.todayTasks.length,
+                      separatorBuilder: (_, index) => Spacer(),
+                      itemBuilder: (_, index) {
+                        return TaskWidget(actualTask: tasksLoadedState.currentDay.todayTasks[index]);
+                      }
+                  )
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        //TODO ADD NEW NOTE
         onPressed: () {
-          Provider.of<AuthState>(context, listen: false).logoutUser();
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-          );
+          setState(() {
+            tasksLoadedState.currentDay.todayTasks.add(
+              Task(idTask: 0, title: "", isChecked: false, hexColor: ColorTask.red, elementList: [])
+            );
+          });
         },
-        tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
     );
   }
+
+
 }

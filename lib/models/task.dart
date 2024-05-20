@@ -19,10 +19,13 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     List<ElementTask> elements = [];
-    if (json['elementList'] != null) {
-      json['elementList'].forEach((elementJson) {
+    if (json['elementsList'] != null) {
+      json['elementsList'].forEach((elementJson) {
+        print(elementJson);
         elements.add(ElementTask.fromJson(elementJson));
       });
+    } else {
+      print("No elements");
     }
 
     return Task(
@@ -48,6 +51,16 @@ class Task {
       'hexColor': hexColor.hex,
       'elementList': elementsJson,
     };
+  }
+
+  @override
+  String toString() {
+    return "idTask : ${idTask} "
+        "title : $title "
+        "isChecked : $isChecked "
+        "hexColor : $hexColor "
+        "elementList $elementList ";
+
   }
 
 }

@@ -5,7 +5,7 @@ import 'package:taskmate_app/models/elementTasks/element_task.dart';
 
 class ImageElement extends ElementTask {
 
-  File image;
+  File? image;
 
   ImageElement({
     required super.elementId,
@@ -15,12 +15,12 @@ class ImageElement extends ElementTask {
 
   @override
   Map<String, dynamic> toJson() {
-    List<int> imageBytes = image.readAsBytesSync();
+    List<int>? imageBytes = image?.readAsBytesSync();
 
     return {
       "elementId" : elementId,
       "taskOrder" : taskOrder,
-      "image" : base64Encode(imageBytes),
+      "image" : base64Encode(imageBytes!),
     };
   }
 

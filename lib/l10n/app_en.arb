@@ -11,6 +11,10 @@
   "loginUserTextNotLink" : "Already have an account? ",
   "registerUserLink" : "Register here! ",
   "loginUserLink" : "Login here! ",
+  "elementTypeNotExist" : "An unknown type element has exist ",
+  "textFieldHint" : "Write Here",
+  "imageSelectorText" : "Choose a Image",
+  "videoSelectorText" : "Choose a video",
 
   "err1001": "UserID already exists",
   "err1002": "User Email already exists",

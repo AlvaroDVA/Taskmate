@@ -9,7 +9,7 @@ import 'package:uuid/uuid.dart';
 
 abstract class ElementTask {
 
-  Uuid elementId;
+  String elementId;
   int taskOrder;
 
   ElementTask({
