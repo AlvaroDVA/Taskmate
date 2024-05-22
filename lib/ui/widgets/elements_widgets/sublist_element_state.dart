@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/app_config.dart';
@@ -6,6 +5,7 @@ import '../../../models/elementTasks/sublist.dart';
 import '../../../models/elementTasks/sublist_element.dart';
 import '../../../services/service_locator.dart';
 import '../element_task_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SublistElementState extends State<ElementTaskWidget> {
   final SublistElement element;
@@ -16,7 +16,6 @@ class SublistElementState extends State<ElementTaskWidget> {
     required this.element,
   }) {
     appConfig = ServiceLocator.appConfig;
-    print("Check ${element.sublist.length}");
     _sublistControllers = element.sublist.map((subElement) {
       return TextEditingController(text: subElement.text);
     }).toList();
@@ -24,7 +23,7 @@ class SublistElementState extends State<ElementTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const double _padding = 20.0;
+    const double _padding = 10.0;
 
     return Center(
       child: Column(
@@ -91,7 +90,7 @@ class SublistElementState extends State<ElementTaskWidget> {
           ],
         ),
         child: SizedBox(
-          height: (100.0 * element.sublist.length),
+          height: (72.0 * element.sublist.length),
           child: ListView.separated(
             itemCount: element.sublist.length,
             separatorBuilder: (_, index) => SizedBox(height: _padding),
@@ -110,6 +109,7 @@ class SublistElementState extends State<ElementTaskWidget> {
                         },
                         decoration: InputDecoration(
                           border: InputBorder.none,
+                          hintText: AppLocalizations.of(context)!.sublistHint,
                           icon: IconButton(
                             icon : Icon(Icons.delete),
                             onPressed: () {
@@ -157,6 +157,7 @@ class SublistElementState extends State<ElementTaskWidget> {
               },
               style: appConfig.theme.title,
               decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.sublistHint,
                 border: InputBorder.none,
               ),
             ),

@@ -19,15 +19,15 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     List<ElementTask> elements = [];
-    if (json['elementsList'] != null) {
-      json['elementsList'].forEach((elementJson) {
-        print(elementJson);
+    if (json['elementList'] != null) {
+      json['elementList'].forEach((elementJson) {
+        print(elementJson.toString());
         elements.add(ElementTask.fromJson(elementJson));
       });
     } else {
       print("No elements");
     }
-
+    print(json['colorHex']);
     return Task(
       idTask: json['idTask'],
       title: json['title'],
@@ -45,10 +45,10 @@ class Task {
     }
 
     return {
-      'idTask': idTask.toString(),
+      'idTask': idTask,
       'title': title,
       'isChecked': isChecked,
-      'hexColor': hexColor.hex,
+      'colorHex': hexColor.hex,
       'elementList': elementsJson,
     };
   }
@@ -58,7 +58,7 @@ class Task {
     return "idTask : ${idTask} "
         "title : $title "
         "isChecked : $isChecked "
-        "hexColor : $hexColor "
+        "colorHex : $hexColor "
         "elementList $elementList ";
 
   }

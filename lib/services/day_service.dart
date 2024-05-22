@@ -23,4 +23,11 @@ class DayService {
     return Day.fromJson(res);
   }
 
+  Future<void> saveDayTasks(Day currentDay, User? currentUser) async {
+    if (currentUser != null) {
+      await tasksApiRest.saveTasksFromDay(currentDay, currentUser);
+    }
+
+  }
+
 }

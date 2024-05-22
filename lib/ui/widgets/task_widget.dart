@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/models/elementTasks/image_element.dart';
+import 'package:taskmate_app/models/elementTasks/sublist.dart';
+import 'package:taskmate_app/models/elementTasks/sublist_element.dart';
 import 'package:taskmate_app/models/elementTasks/text_element.dart';
 import 'package:taskmate_app/models/elementTasks/video_element.dart';
 import 'package:taskmate_app/models/task.dart';
@@ -25,6 +27,7 @@ class TaskWidget extends StatefulWidget{
 class _TaskWidget extends State<TaskWidget> {
 
   AppConfig appConfig = ServiceLocator.appConfig;
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   void dispose() {
@@ -32,8 +35,14 @@ class _TaskWidget extends State<TaskWidget> {
   }
 
   @override
+  void initState() {
+    textEditingController.text = widget.actualTask.title;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-  const double padding = 20.0;
+  const double padding = 10.0;
   const double margin = 10.0;
   const double radius = 10.0;
   const double opacity = 0.5;
@@ -67,12 +76,15 @@ class _TaskWidget extends State<TaskWidget> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController(text: task.title),
+                    controller: textEditingController,
                     style: appConfig.theme.title,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: AppLocalizations.of(context)!.textFieldHint
                     ),
+                    onEditingComplete: () {
+                      task.title = textEditingController.text;
+                    },
                   ),
                 ),
                 Transform.scale(
@@ -193,10 +205,21 @@ class _TaskWidget extends State<TaskWidget> {
                   child: IconButton(
                       onPressed: () {
                         setState(() {
-
+                          task.elementList.add(
+                              SublistElement(
+                                  elementId: uuid.v1(),
+                                  taskOrder: task.elementList.length,
+                                  title: "",
+                                  sublist: List<Sublist>.empty(growable: true)
+                              )
+                          );
+                          if (task.elementList.last is SublistElement) {
+                            var taskS = task.elementList.last as SublistElement;
+                            taskS.sublist.add(Sublist(text: "", isChecked: false));
+                          }
                         });
                       },
-                      icon: Icon(Icons.text_fields)
+                      icon: Icon(Icons.list)
                   ),
                 ),
               ),

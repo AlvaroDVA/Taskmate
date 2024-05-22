@@ -18,18 +18,25 @@ abstract class ElementTask {
   });
 
   factory ElementTask.fromJson(Map<String, dynamic> json) {
-    if (json['image'] != null) {
+    if (json.containsKey("image")) {
       return TasksUtils.imageElementFromJson(json);
-    } else if (json['text'] != null) {
-      return TasksUtils.textElementFromJson(json);
-    } else if (json['video'] != null) {
-      return TasksUtils.videoElementFromJson(json);
-    } else if (json['title'] != null && json['sublist'] != null) {
-      return TasksUtils.sublistElementFromJson(json);
+    } else {
+      // Manejar el resto de los elementos de manera síncrona
+      if (json['text'] != null) {
+        return TasksUtils.textElementFromJson(json);
+      } else if (json.containsKey("video")) {
+        return TasksUtils.videoElementFromJson(json);
+      } else if (json['title'] != null && json['sublist'] != null) {
+        return TasksUtils.sublistElementFromJson(json);
+      } else {
+        throw TaskJsonException("Tarea mal formada en el Json");
+      }
     }
-    throw TaskJsonException("Tarea mal formada en el Json");
   }
 
   Map<String, dynamic> toJson();
+
+
+
 
 }

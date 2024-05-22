@@ -12,17 +12,33 @@ import 'package:uuid/uuid.dart';
 import '../models/elementTasks/sublist.dart';
 
 class TasksUtils {
-  static imageElementFromJson(Map<String, dynamic> json) {
-    Uint8List base64Data = base64Decode(json['image']);
+ static ImageElement imageElementFromJson(Map<String, dynamic> json) {
+   var image = json['image'];
+   if (image != null) {
+     Uint8List base64Data = base64Decode(image);
 
-    File tempFile = File('temp_image.png');
-    tempFile.writeAsBytesSync(base64Data);
+     // Obteniendo el directorio temporal de forma síncrona
+     Directory tempDir = Directory.systemTemp;
+     // Generando un nombre único para el archivo
+     String tempPath = '${tempDir.path}/temp_image.png';
 
-    return ImageElement(
-        elementId: json['elementId'],
-        taskOrder: json['taskOrder'],
-        image: tempFile
-    );
+     // Escribir los datos de imagen en el archivo temporal
+     File tempFile = File(tempPath);
+     tempFile.writeAsBytesSync(base64Data);
+
+     return ImageElement(
+       elementId: json['elementId'],
+       taskOrder: json['taskOrder'],
+       image: tempFile,
+     );
+   }
+   return ImageElement(
+     elementId: json['elementId'],
+     taskOrder: json['taskOrder'],
+     image: null,
+   );
+
+
   }
 
   static TextElement textElementFromJson(Map<String, dynamic> json) =>
@@ -33,15 +49,29 @@ class TasksUtils {
       );
 
   static VideoElement videoElementFromJson(Map<String, dynamic> json) {
-    Uint8List base64Data = base64Decode(json['video']);
+    var video = json['video'];
+    if (video != null) {
+      Uint8List base64Data = base64Decode(video);
 
-    File tempFile = File('temp_image.png');
-    tempFile.writeAsBytesSync(base64Data);
+      // Obteniendo el directorio temporal de forma síncrona
+      Directory tempDir = Directory.systemTemp;
+      // Generando un nombre único para el archivo
+      String tempPath = '${tempDir.path}/temp_image.png';
 
-    return VideoElement(
+      // Escribir los datos de imagen en el archivo temporal
+      File tempFile = File(tempPath);
+      tempFile.writeAsBytesSync(base64Data);
+
+      return VideoElement(
         elementId: json['elementId'],
         taskOrder: json['taskOrder'],
-        video: tempFile
+        video: tempFile,
+      );
+    }
+    return VideoElement(
+      elementId: json['elementId'],
+      taskOrder: json['taskOrder'],
+      video: null,
     );
   }
 

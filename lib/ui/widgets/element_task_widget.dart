@@ -78,6 +78,7 @@ class _ImageElementState extends State<ElementTaskWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _pickImage,
+      onLongPress: _deleteImage,
       child: Center(
         child: Container(
           decoration: BoxDecoration(
@@ -100,34 +101,72 @@ class _ImageElementState extends State<ElementTaskWidget> {
       ),
     );
   }
+
+  Future<void> _deleteImage() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.deleteImageTitle),
+        content: Text(AppLocalizations.of(context)!.deleteImageText),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(AppLocalizations.of(context)!.cancelButton),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(AppLocalizations.of(context)!.deleteButton),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != null && confirmed) {
+      setState(() {
+        element.image = null;
+      });
+    }
+  }
 }
 
 class _TextElementState extends State<ElementTaskWidget>{
 
   late AppConfig appConfig;
   TextElement element;
+  TextEditingController textEditingController = TextEditingController();
 
-  _TextElementState({required this.element});
+  _TextElementState({required this.element}) {
+    textEditingController.text = element.text;
+  }
 
   @override
   Widget build(BuildContext context) {
     appConfig = Provider.of<AppConfig>(context);
-    double _padding = 20.0;
+    double _padding = 8;
+
 
     return Padding(
       padding: EdgeInsets.all(_padding),
-      child: TextField(
-        controller: TextEditingController(text: element.text),
-        onEditingComplete: () {
-          setState(() {
-            element.text = element.text;
-          });
-        },
-        style: appConfig.theme.title,
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: AppLocalizations.of(context)!.textFieldHint
-          )
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all()
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(_padding / 2),
+          child: TextField(
+            controller: textEditingController,
+            onChanged: (value) {
+              element.text = value;
+            },
+              maxLines: null,
+              minLines: 1,
+            style: appConfig.theme.title,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: AppLocalizations.of(context)!.textFieldHint
+              )
+          ),
+        ),
       ),
     );
   }
@@ -157,7 +196,7 @@ class _VideoElementState extends State<ElementTaskWidget> {
         ..initialize().then((_) {
           setState(() {
             if (_controller!.value.isInitialized) {
-              _controller?.play();
+              _controller?.pause();
             }
           });
         });
@@ -206,16 +245,16 @@ class _VideoElementState extends State<ElementTaskWidget> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Video'),
-        content: Text('Are you sure you want to delete this video?'),
+        title: Text(AppLocalizations.of(context)!.deleteVideoContent),
+        content: Text(AppLocalizations.of(context)!.deleteVideoContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancelButton),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Delete'),
+            child: Text(AppLocalizations.of(context)!.deleteButton),
           ),
         ],
       ),

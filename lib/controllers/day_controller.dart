@@ -15,5 +15,9 @@ class DayController {
     return res;
   }
 
+  Future<void> saveDay(Day currentDay, User? currentUser) async {
+    await dayService.saveDayTasks(currentDay, currentUser);
+  }
+
 }
 

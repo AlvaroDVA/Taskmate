@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:intl/intl.dart';
+import 'package:taskmate_app/models/day.dart';
+
 import '../config/app_config.dart';
 import '../models/task.dart';
 import '../models/user.dart';
@@ -26,6 +29,22 @@ class TasksApiRest {
     }else {
       throw Exception('Error al recuperar las tareas: ${response.reasonPhrase}');
     }
+  }
+
+  Future<void> saveTasksFromDay(Day currentDay, User user) async{
+    String url = "${appConfig.urlApi}/tasks";
+
+    Map<String,dynamic> body = currentDay.toJson(currentDay);
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json','username': user.username,
+        'password': user.password},
+      body: jsonEncode(<String,dynamic> {
+        'idUser' : user.idUser,
+        'date' : body['date'],
+        'tasks' : body['todayTasks']
+      }),
+    );
   }
 
 }

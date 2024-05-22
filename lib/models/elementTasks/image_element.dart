@@ -15,13 +15,20 @@ class ImageElement extends ElementTask {
 
   @override
   Map<String, dynamic> toJson() {
-    List<int>? imageBytes = image?.readAsBytesSync();
-
+    if (image != null) {
+      List<int>? imageBytes = image?.readAsBytesSync();
+      return {
+        "elementId" : elementId,
+        "taskOrder" : taskOrder,
+        "image" : base64Encode(imageBytes!),
+      };
+    }
     return {
       "elementId" : elementId,
       "taskOrder" : taskOrder,
-      "image" : base64Encode(imageBytes!),
+      "image" : null
     };
+
   }
 
 }

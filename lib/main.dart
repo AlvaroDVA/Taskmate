@@ -12,8 +12,28 @@ import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/pages/day_task_screen.dart';
 import 'package:taskmate_app/ui/pages/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize window manager.
+  await windowManager.ensureInitialized();
+
+  // Set window options.
+  WindowOptions windowOptions = WindowOptions(
+    size: Size(1000, 700),
+    center: true,
+    skipTaskbar: false,
+    title: 'Flutter Window Manager',
+    titleBarStyle: TitleBarStyle.normal,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(
     ChangeNotifierProvider(
     create: (_) => AuthState(),
@@ -73,65 +93,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  final UserController userController = ServiceLocator.userController;
-
-  int _counter = 0;
-  String state = "uihui";
-
-  void _incrementCounter() {
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    final authState = Provider.of<AuthState>(context);
-
-    setState(() {
-      state = authState.currentUser!.username;
-    });
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-             Text(
-               state
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed:() {
-            Provider.of<AuthState>(context, listen: false).logoutUser();
-            Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-          );
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}

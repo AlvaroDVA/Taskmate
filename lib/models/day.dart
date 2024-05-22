@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:taskmate_app/models/task.dart';
 
 class Day {
@@ -13,9 +14,10 @@ class Day {
 
   factory Day.fromJson(Map<String, dynamic> json) {
     List<Task> tasks = [];
-
+    print("aaaaaaaaaaaaaaa ${json['tasks']}");
     if (json['tasks'] != null) {
       json['tasks'].forEach((elementJson) {
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         tasks.add(Task.fromJson(elementJson));
       });
     }
@@ -31,11 +33,12 @@ class Day {
 
     List<Map<String, dynamic>> elements = [];
     for (var task in item.todayTasks) {
+      print("aaaaaaaaaaaaaaa $item");
       elements.add(task.toJson());
     }
 
     return {
-      'date' : item.date,
+      'date' : DateFormat('yyyy-MM-dd').format(item.date),
       'todayTasks' : elements
     };
   }

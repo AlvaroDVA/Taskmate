@@ -16,11 +16,16 @@ class VideoElement extends ElementTask {
   @override
   Map<String, dynamic> toJson() {
     List<int>? videoBytes = video?.readAsBytesSync();
-
+    var send;
+    if (videoBytes != null) {
+      send = base64Encode(videoBytes);
+    }else {
+      send = "none";
+    }
     return {
       "elementId" : elementId,
       "taskOrder" : taskOrder,
-      "video" : base64Encode(videoBytes!),
+      "video" : send,
     };
   }
 

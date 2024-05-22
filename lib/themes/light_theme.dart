@@ -36,7 +36,7 @@ class LightTheme implements CustomTheme {
     title = TextStyle(
       color: auxColor,
       fontFamily: "Space Mono",
-      fontSize: 16
+      fontSize: 16,
     );
   }
 }
