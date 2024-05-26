@@ -154,7 +154,11 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
             _showColorPickerDialog();
           });
         },
-        child: const Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: appConfig.theme.darkAuxColor,
+        ),
+        backgroundColor: appConfig.theme.lightColor2,
       ),
     );
   }

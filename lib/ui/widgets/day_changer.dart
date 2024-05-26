@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taskmate_app/ui/widgets/theme_widgets/day_changer_icon_widget.dart';
 
 import '../../config/app_config.dart';
 import '../../services/service_locator.dart';
@@ -19,37 +20,40 @@ class DayChanger extends StatelessWidget implements PreferredSizeWidget {
           ),
           child: Row(
             children: [
-              IconButton(
-                  onPressed: () {
-                    taskLoadedState.saveCurrentTask();
-                    taskLoadedState.setCurrentDay(taskLoadedState.currentDay.date.subtract(
-                        Duration(days: 1)
-                    ));
-                  },
-                  icon: Icon(Icons.arrow_back)
+              DayChangerIcon(
+                icon: Icons.arrow_back,
+                onPressed: () {
+                  taskLoadedState.saveCurrentTask();
+                  taskLoadedState.setCurrentDay(
+                      taskLoadedState.currentDay.date.subtract(Duration(days: 1))
+                  );
+                },
               ),
               Spacer(),
               Consumer <TasksLoadedState>(
                 builder: (BuildContext context, TasksLoadedState tasksLoadedState, Widget? child){
-                  return Text(tasksLoadedState.currentDay.getStringDay(context));
+                  return Text(
+                    tasksLoadedState.currentDay.getStringDay(context),
+                    style: appConfig.theme.title,
+                  );
                 }
               ),
               Spacer(),
-              IconButton(
-                  onPressed: () {
-                    taskLoadedState.saveCurrentTask();
-                    taskLoadedState.setCurrentDay(taskLoadedState.currentDay.date.add(
-                        Duration(days: 1)
-                    ));
-                  },
-                  icon: Icon(Icons.arrow_forward)
-              )
+              DayChangerIcon(
+                icon: Icons.arrow_forward,
+                onPressed: () {
+                  taskLoadedState.saveCurrentTask();
+                  taskLoadedState.setCurrentDay(taskLoadedState.currentDay.date.add(
+                      Duration(days: 1)
+                  ));
+                },
+              ),
             ],
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: appConfig.theme.lightColor,
+            color: appConfig.theme.lightColor2,
           ),
           child: Row(
             children: [
@@ -61,12 +65,12 @@ class DayChanger extends StatelessWidget implements PreferredSizeWidget {
                     final screenWidth = MediaQuery.of(context).size.width;
                     return Visibility(
                       visible: screenWidth <= 650,
-                      child: IconButton(
+                      child:
+                      DayChangerIcon(
+                        icon: Icons.arrow_forward_ios_outlined,
                         onPressed: () {
                           Scaffold.of(context).openDrawer();
                         },
-                        iconSize: 12,
-                        icon: Icon(Icons.arrow_back_ios_new_rounded),
                       ),
                     );
                   },
@@ -83,3 +87,4 @@ class DayChanger extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight * 1.45);
 
 }
+

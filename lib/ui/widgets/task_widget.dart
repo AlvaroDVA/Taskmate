@@ -81,7 +81,7 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
         borderRadius: BorderRadius.circular(radius),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(opacity),
+            color: appConfig.theme.shadowColor,
             spreadRadius: spreadRadius,
             blurRadius: blur,
             offset: Offset(0, 3),
@@ -112,6 +112,13 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
                 Transform.scale(
                   scale: scaleTransform,
                   child: Checkbox(
+                    fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                      if (states.contains(MaterialState.selected)) {
+                        return appConfig.theme.lightColor2;
+                      }
+                      return appConfig.theme.greyColor;
+                    }),
+                    checkColor: appConfig.theme.darkAuxColor,
                       value: task.isChecked,
                       onChanged: (_) {
                         setState(() {

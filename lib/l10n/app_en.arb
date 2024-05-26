@@ -39,6 +39,8 @@
   "settingsPageTitle" : "Settings",
   "dayPageTitle" : "Home",
   "closeSessionText" : "Log out",
+  "lightThemeText" : "Light",
+  "darkThemeText" : "Dark",
 
   "err1001": "UserID already exists",
   "err1002": "User Email already exists",

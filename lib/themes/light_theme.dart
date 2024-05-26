@@ -16,6 +16,14 @@ class LightTheme implements CustomTheme {
   Color darkAuxColor = const Color(0xff000000);
   @override
   Color errorColor = const Color(0xffda0c0c);
+  @override
+  Color greyColor = const Color(0xff3f3f3f);
+  @override
+  Color iconColor = const Color(0xffFFFFFF);
+
+  @override
+  Color shadowColor = const Color(0xff68615a);
+
 
   @override
   late TextStyle diamongNotSelectedText;
@@ -38,5 +46,31 @@ class LightTheme implements CustomTheme {
       fontFamily: "Space Mono",
       fontSize: 16,
     );
+    subtitle = TextStyle(
+      color: auxColor,
+      fontFamily: "Space Mono",
+      fontSize: 14,
+    );
+    text = TextStyle(
+      color: auxColor,
+      fontFamily: "Space Mono",
+      fontSize: 12,
+    );
+    diamongNotSelectedText = TextStyle(
+      color: auxColor,
+      fontFamily: "Space Mono",
+      fontSize: 12,
+    );
+    diamongSelectedText = TextStyle(
+      color: lightColor,
+      fontFamily: "Space Mono",
+      fontSize: 12,
+    );
   }
+
+  String get name => "light";
+
+
+
+
 }

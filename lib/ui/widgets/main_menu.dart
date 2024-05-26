@@ -8,6 +8,7 @@ import 'package:taskmate_app/states/screens_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/pages/login_screen.dart';
+import 'package:taskmate_app/ui/widgets/theme_widgets/menu_tile.dart';
 
 class MainMenu extends StatefulWidget {
   @override
@@ -32,10 +33,10 @@ class MainMenuState extends State<MainMenu> {
         backgroundColor: appConfig.theme.secondaryColor,
         child: Column(
           children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.check_box_rounded),
-              title: Text(AppLocalizations.of(context)!.dayPageTitle),
-              onTap: () {
+            MenuTile(
+              icon: Icons.check_box_rounded,
+              text: AppLocalizations.of(context)!.dayPageTitle,
+              event: () {
                 taskLoadedState.saveCurrentTask();
                 screenState.setTaskScreen();
               },
@@ -43,25 +44,24 @@ class MainMenuState extends State<MainMenu> {
             Expanded(
               child: Container(),
             ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text(AppLocalizations.of(context)!.settingsPageTitle),
-              onTap: () {
+            MenuTile(
+              icon: Icons.settings,
+              text: AppLocalizations.of(context)!.settingsPageTitle,
+              event: () {
                 taskLoadedState.saveCurrentTask();
                 screenState.setSettingsScreen();
               },
             ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text(AppLocalizations.of(context)!.closeSessionText),
-              onTap: () async {
-                  await taskLoadedState.saveCurrentTask();
-                  await authState.logoutUser();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
-
+            MenuTile(
+              icon: Icons.logout,
+              text: AppLocalizations.of(context)!.closeSessionText,
+              event: () async {
+                await taskLoadedState.saveCurrentTask();
+                await authState.logoutUser();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
               },
             ),
           ],
@@ -70,3 +70,5 @@ class MainMenuState extends State<MainMenu> {
     );
   }
 }
+
+

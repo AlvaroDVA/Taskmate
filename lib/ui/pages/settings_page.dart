@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskmate_app/config/app_config.dart';
+import 'package:taskmate_app/enums/app_theme.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/auth_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:taskmate_app/themes/dark_theme.dart';
+import 'package:taskmate_app/themes/light_theme.dart';
+import 'package:taskmate_app/themes/theme.dart';
 import '../../enums/lenguages.dart';
+import '../widgets/theme_widgets/settings_card.dart';
 
 class SettingsScreeen extends StatefulWidget {
   @override
@@ -22,15 +27,19 @@ class SettingScreenState extends State<SettingsScreeen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: appConfig.theme.primaryColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settingsPageTitle),
+        backgroundColor: appConfig.theme.primaryColor,
+        title: Text(
+            AppLocalizations.of(context)!.settingsPageTitle,
+          style: appConfig.theme.title,
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Avatar e información del usuario
           Container(
-            color: Colors.grey[200],
+            color: appConfig.theme.greyColor,
             padding: EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,9 +51,12 @@ class SettingScreenState extends State<SettingsScreeen> {
                 SizedBox(height: 10),
                 Text(
                   authState.currentUser!.username,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: appConfig.theme.text,
                 ),
-                Text(authState.currentUser!.email),
+                Text(
+                  authState.currentUser!.email,
+                  style: appConfig.theme.text,
+                ),
               ],
             ),
           ),
@@ -54,34 +66,30 @@ class SettingScreenState extends State<SettingsScreeen> {
               builder: (BuildContext context) {
                 return ListView(
                   children: [
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.palette),
-                        title: Text(AppLocalizations.of(context)!.changeThemeText),
-                        onTap: () {
-                          // Lógica para cambiar el tema
-                        },
-                      ),
+                    SettingsCard(
+                      leadingIcon: Icons.palette,
+                      title: AppLocalizations.of(context)!.changeThemeText,
+                      onTap: () {
+                        setState(() {
+                          _showThemeModal(context);
+                        });
+                      },
                     ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.language),
-                        title: Text(AppLocalizations.of(context)!.changeLanguageText),
-                        onTap: () {
-                          setState(() {
-                            _showLanguageModal(context);
-                          });
-                        },
-                      ),
+                    SettingsCard(
+                      leadingIcon: Icons.language,
+                      title: AppLocalizations.of(context)!.changeLanguageText,
+                      onTap: () {
+                        setState(() {
+                          _showLanguageModal(context);
+                        });
+                      },
                     ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.delete),
-                        title: Text(AppLocalizations.of(context)!.deleteUserText),
-                        onTap: () {
-                          // Lógica para eliminar el usuario
-                        },
-                      ),
+                    SettingsCard(
+                      leadingIcon: Icons.delete,
+                      title: AppLocalizations.of(context)!.deleteUserText,
+                      onTap: () {
+                        // Lógica para eliminar el usuario
+                      },
                     ),
                   ],
                 );
@@ -101,7 +109,7 @@ class SettingScreenState extends State<SettingsScreeen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Cambiar idioma'),
+            title: Text(AppLocalizations.of(context)!.changeLanguageText),
             content: SingleChildScrollView(
               child: Column(
                 children: Language.values.map((language) {
@@ -129,4 +137,52 @@ class SettingScreenState extends State<SettingsScreeen> {
         return AppLocalizations.of(context)!.spanishText;
     }
   }
+
+  void _showThemeModal(BuildContext context) {
+    setState(() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.changeThemeText),
+            content: SingleChildScrollView(
+              child: Column(
+                children: AppTheme.values.map((theme) {
+                  return ListTile(
+                    title: Text(_getThemeName(theme, context)),
+                    onTap: () {
+                      appConfig.changeTheme(toTheme(theme));
+                      Navigator.pop(context); // Cierra el diálogo
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  CustomTheme toTheme(AppTheme theme) {
+    switch (theme) {
+      case AppTheme.light:
+        return LightTheme();
+      case AppTheme.dark:
+        return DarkTheme();
+    }
+  }
+
+  String _getThemeName(AppTheme theme, BuildContext context) {
+    switch (theme) {
+      case AppTheme.light:
+        return AppLocalizations.of(context)!.lightThemeText;
+      case AppTheme.dark:
+        return AppLocalizations.of(context)!.darkThemeText;
+    }
+  }
 }
+
+
+
+

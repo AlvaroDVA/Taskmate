@@ -69,43 +69,48 @@ class MyApp extends StatelessWidget {
           create: (_) => ServiceLocator.screenState,
         )
       ],
-      child: Consumer<AuthState>(
-        builder: (context1, authState, child) {
-          return MaterialApp(
-              title: 'Flutter Demo',
-              locale: ServiceLocator.appConfig.locale,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('en'),
-                Locale('es'),
-              ],
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: ServiceLocator.appConfig.theme.primaryColor),
-                useMaterial3: true,
-              ),
-              home: FutureBuilder(
-                future: authState.checkIsLogged(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // Mientras se está verificando el estado de inicio de sesión, muestra un indicador de carga
-                    return Scaffold(
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                  } else {
-                    // Cuando la verificación esté completa, muestra la pantalla correspondiente
-                    return authState.isLogged ? const HomePage() : LoginScreen();
-                  }
-                },
-              )
+      child: Consumer<AppConfig>(
+        builder: (context, appConfig, child) {
+          return Consumer<AuthState>(
+            builder: (context1, authState, child) {
+              return MaterialApp(
+                title: 'Flutter Demo',
+                locale: appConfig.locale,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('es'),
+                ],
+                theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(seedColor: appConfig.theme.primaryColor),
+                  useMaterial3: true,
+                ),
+                home: FutureBuilder(
+                  future: authState.checkIsLogged(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Mientras se está verificando el estado de inicio de sesión, muestra un indicador de carga
+                      return Scaffold(
+                        body: Center(child: CircularProgressIndicator()),
+                      );
+                    } else {
+                      // Cuando la verificación esté completa, muestra la pantalla correspondiente
+                      return authState.isLogged ? const HomePage() : LoginScreen();
+                    }
+                  },
+                ),
+              );
+            },
           );
         },
       ),
     );
   }
 }
+
 

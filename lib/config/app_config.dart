@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:properties/properties.dart';
+import 'package:taskmate_app/enums/app_theme.dart';
 import 'package:taskmate_app/enums/lenguages.dart';
 import 'package:taskmate_app/themes/theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,7 +33,7 @@ class AppConfig extends ChangeNotifier{
      properties = Properties.fromFile(rutaArchivo);
 
      language = properties.get('language') ?? "English";
-     theme = CustomTheme.fromProperties(properties.get('theme') ?? "Light");
+     theme = CustomTheme.fromProperties(properties.get('theme') ?? "light");
      urlApi = properties.get('urlApi') ?? "http://taskmate.ddns.net:15556";
 
      await _loadLocale(language);
@@ -76,5 +77,13 @@ class AppConfig extends ChangeNotifier{
    Future<void> saveProperties() async {
      properties.saveToFile(rutaArchivo);
    }
+
+  Future<void> changeTheme(CustomTheme theme) async {
+    properties['theme'] = theme.name;
+    this.theme = theme;
+    await _loadLocale(language);
+    await saveProperties();
+    notifyListeners();
+  }
 
 }

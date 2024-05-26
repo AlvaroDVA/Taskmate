@@ -40,6 +40,8 @@
   "settingsPageTitle" : "Configuración",
   "dayPageTitle" : "Principal",
   "closeSessionText" : "Cerrar Sesión",
+  "lightThemeText" : "Claro",
+  "darkThemeText" : "Oscuro",
 
 
   "err1001": "La ID de este usuario ya existe",
