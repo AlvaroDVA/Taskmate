@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../states/auth_state.dart';
 
 class TextBlockForm extends StatelessWidget {
   const TextBlockForm({

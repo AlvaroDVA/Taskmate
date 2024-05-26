@@ -8,6 +8,7 @@ import 'package:taskmate_app/rest/tasks_api_rest.dart';
 import 'package:taskmate_app/rest/user_api_rest.dart';
 import 'package:taskmate_app/services/day_service.dart';
 import 'package:taskmate_app/services/user_service.dart';
+import 'package:taskmate_app/states/screens_state.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 
 import '../states/auth_state.dart';
@@ -20,7 +21,9 @@ class ServiceLocator {
   static final DayController _dayController = DayController();
   static final DayService _dayService = DayService();
   static final TasksApiRest _tasksApiRest = TasksApiRest();
-  static AuthState? _authState;
+  static ScreenState _screenState = ScreenState();
+  static TasksLoadedState _tasksLoadedState = TasksLoadedState();
+  static AuthState _authState = AuthState();
 
   static UserController get userController => _userController;
   static UserService get userService => _userService;
@@ -29,12 +32,8 @@ class ServiceLocator {
   static DayController get dayController => _dayController;
   static DayService get dayService => _dayService;
   static TasksApiRest get tasksApiRest => _tasksApiRest;
-  static AuthState get authState  {
-    if (_authState != null) {
-      return _authState!;
-    }else {
-      return AuthState();
-    }
-  }
-  static void setAuthState(AuthState authState) => _authState = authState;
+  static ScreenState get screenState => _screenState;
+  static TasksLoadedState get taskLoadedState => _tasksLoadedState;
+  static AuthState get authState => _authState;
+
 }

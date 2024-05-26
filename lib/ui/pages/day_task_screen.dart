@@ -9,15 +9,18 @@ import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/controllers/day_controller.dart';
 import 'package:taskmate_app/enums/color_task.dart';
 import 'package:taskmate_app/models/day.dart';
+import 'package:taskmate_app/models/elementTasks/element_task.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../widgets/main_menu.dart';
 import 'package:taskmate_app/ui/widgets/task_widget.dart';
 import 'package:uuid/uuid.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../models/task.dart';
 import '../../states/auth_state.dart';
+import '../widgets/day_changer.dart';
 import 'login_screen.dart';
 
 class DayTaskScreen extends StatefulWidget {
@@ -30,17 +33,14 @@ class DayTaskScreen extends StatefulWidget {
 class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserver, WindowListener{
   final DayController dayController = ServiceLocator.dayController;
   final AuthState authState = ServiceLocator.authState;
-  late TasksLoadedState tasksLoadedState;
+  final TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
   final AppConfig appConfig = ServiceLocator.appConfig;
   final ScrollController _scrollController = ScrollController();
-  bool firstLoad = true;
-
+  bool loaded = false;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    windowManager.setPreventClose(true);
-    windowManager.addListener(this);
+    _initialice();
   }
 
   @override
@@ -53,7 +53,7 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.detached) {
-      dayController.saveDay(tasksLoadedState.currentDay, authState.currentUser);
+      tasksLoadedState.saveCurrentTask();
     }
   }
 
@@ -93,32 +93,25 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
   }
 
 
-  void loadTasks() async {
+  Future<void> loadTasks() async {
+    print(authState.isLogged);
     if (authState.isLogged) {
-      var day = await dayController.loadDayTasks(
-          authState.currentUser!, tasksLoadedState.currentDay.date);
-      if (!day.loaded) {
+      tasksLoadedState.loadCurrentDay(DateTime.now());
+      if (!tasksLoadedState.currentDay.loaded) {
         tasksLoadedState.setErrorMessage(
             AppLocalizations.of(context)!.tasksNotLoadedError);
       } else {
         tasksLoadedState.setErrorMessage(null);
       }
     }
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    if(firstLoad) {
-      tasksLoadedState = Provider.of<TasksLoadedState>(context);
-    }
 
     return Scaffold(
-      // TODO Cambiador de dias
-      appBar: AppBar(
-        title: Center(child: Text('Day Task Screen')),
-        backgroundColor: appConfig.theme.secondaryColor,
-      ),
+      drawer: MainMenu(),
+      appBar: DayChanger(),
       body: Container(
         color: appConfig.theme.primaryColor,
         child: Container(
@@ -127,14 +120,21 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
             padding: EdgeInsets.only(bottom: 50),
             child: Consumer<TasksLoadedState>(
               builder: (BuildContext context, TasksLoadedState tasksLoadedState, Widget? child) {
-                if (tasksLoadedState.currentDay.loaded) {
+                if (tasksLoadedState.isLoaded) {
                   return Center(
                       child : ListView.separated(
                         controller: _scrollController,
                           itemCount: tasksLoadedState.currentDay.todayTasks.length,
                           separatorBuilder: (_, index) => Spacer(),
                           itemBuilder: (_, index) {
-                            return TaskWidget(actualTask: tasksLoadedState.currentDay.todayTasks[index]);
+                            return TaskWidget(
+                                actualTask: tasksLoadedState.currentDay.todayTasks[index],
+                                onDelete : () {
+                                  setState(() {
+                                    tasksLoadedState.currentDay.todayTasks.removeAt(index);
+                                  });
+                                },
+                            );
                           }
                       )
                   );
@@ -207,11 +207,27 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
         return AppLocalizations.of(context)!.redColor;
       case ColorTask.yellow:
         return AppLocalizations.of(context)!.yellowColor;
-      case ColorTask.white:
-        return AppLocalizations.of(context)!.whiteColor;
+      case ColorTask.green:
+        return AppLocalizations.of(context)!.greenColor;
       case ColorTask.orange:
         return AppLocalizations.of(context)!.orangeColor;
     }
   }
 
+  onDelete(int index) {
+    tasksLoadedState.currentDay.todayTasks.removeAt(index);
+  }
+
+  Future<void> _initialice() async {
+
+    await authState.checkIsLogged();
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA${authState.currentUser?.username ?? "None"}");
+    await tasksLoadedState.loadCurrentDay(DateTime.now());
+    WidgetsBinding.instance.addObserver(this);
+    windowManager.setPreventClose(true);
+    windowManager.addListener(this);
+  }
+
 }
+
+

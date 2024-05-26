@@ -48,30 +48,11 @@ class TasksUtils {
           text: json['text']
       );
 
-  static VideoElement videoElementFromJson(Map<String, dynamic> json) {
-    var video = json['video'];
-    if (video != null) {
-      Uint8List base64Data = base64Decode(video);
-
-      // Obteniendo el directorio temporal de forma síncrona
-      Directory tempDir = Directory.systemTemp;
-      // Generando un nombre único para el archivo
-      String tempPath = '${tempDir.path}/temp_image.png';
-
-      // Escribir los datos de imagen en el archivo temporal
-      File tempFile = File(tempPath);
-      tempFile.writeAsBytesSync(base64Data);
-
-      return VideoElement(
-        elementId: json['elementId'],
-        taskOrder: json['taskOrder'],
-        video: tempFile,
-      );
-    }
-    return VideoElement(
+  static VideoElementOwn videoElementFromJson(Map<String, dynamic> json) {
+    return VideoElementOwn(
       elementId: json['elementId'],
       taskOrder: json['taskOrder'],
-      video: null,
+      video: json['video'],
     );
   }
 
@@ -92,6 +73,8 @@ class TasksUtils {
         sublist: sublist
     );
   }
+
+
 
 
 }

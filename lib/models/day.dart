@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:taskmate_app/models/task.dart';
 
@@ -41,6 +45,15 @@ class Day {
       'date' : DateFormat('yyyy-MM-dd').format(item.date),
       'todayTasks' : elements
     };
+  }
+
+  String getStringDay(BuildContext context) {
+    Locale locale = Localizations.localeOf(context);
+    final DateFormat dayFormat = DateFormat.EEEE(locale.toString());
+    final DateFormat dateFormat = DateFormat('d \'de\' MMMM \'de\' yyyy', locale.toString());
+    String dayOfWeek = dayFormat.format(this.date);
+    String date = dateFormat.format(this.date);
+    return '$dayOfWeek $date';
   }
 
 }

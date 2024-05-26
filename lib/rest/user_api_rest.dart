@@ -18,7 +18,6 @@ class UserApiRest {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       return jsonDecode(response.body);
     } else {
       throw Exception('Error al iniciar sesión: ${response.reasonPhrase}');
@@ -46,7 +45,6 @@ class UserApiRest {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       return jsonDecode(response.body);
     } else {
       throw Exception('Error al registrar usuario: ${response.reasonPhrase}');

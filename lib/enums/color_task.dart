@@ -7,7 +7,7 @@ enum ColorTask {
   blue("428bca"),
   orange("ff7f50"),
   yellow("ffcc5c"),
-  white("ffffff"),
+  green("355E3B"),
   ;
 
   final String hex;

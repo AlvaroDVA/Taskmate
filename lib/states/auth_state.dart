@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 import '../models/user.dart';
 import '../utils/utils.dart';
@@ -8,13 +7,19 @@ import '../utils/utils.dart';
 class AuthState extends ChangeNotifier {
   String? _errorMessage;
   User? _currentUser;
-  bool isLogged = false;
+  bool _isLogged = false;
 
   String? get errorMessage => _errorMessage;
   User? get currentUser => _currentUser;
+  bool get isLogged => _isLogged;
 
   AuthState() {
-    checkLoginStatus();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await checkLoginStatus();
+    notifyListeners();
   }
 
   void setErrorMessage(String? message) {
@@ -24,9 +29,7 @@ class AuthState extends ChangeNotifier {
 
   Future<void> setCurrentUser(User user) async {
     _currentUser = user;
-    notifyListeners();
 
-    // Guardar la información del usuario en SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('idUser', user.idUser);
     await prefs.setString('currentUser', user.username);
@@ -34,33 +37,54 @@ class AuthState extends ChangeNotifier {
     await prefs.setString('email', user.email);
     await prefs.setString('avatarUri', await user.avatarString());
     await prefs.setBool('isLoggedIn', true);
+
+    _isLogged = true;
+    notifyListeners();
   }
 
   Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool loggedIn = prefs.getBool('isLoggedIn') ?? false;
-    isLogged = loggedIn;
+    _isLogged = prefs.getBool('isLoggedIn') ?? false;
 
-    if (loggedIn) {
-      _currentUser = User(
-        idUser: prefs.getString('idUser')!,
-        username: prefs.getString('currentUser')!,
-        password: prefs.getString('password')!,
-        email: prefs.getString('email')!,
-        avatar: await Utils.fileFromBytes(prefs.getString('avatarUri')),
-      );
+    if (_isLogged) {
+      final idUser = prefs.getString('idUser');
+      final username = prefs.getString('currentUser');
+      final password = prefs.getString('password');
+      final email = prefs.getString('email');
+      final avatarUri = prefs.getString('avatarUri');
+
+      if (idUser != null && username != null && password != null && email != null && avatarUri != null) {
+        _currentUser = User(
+          idUser: idUser,
+          username: username,
+          password: password,
+          email: email,
+          avatar: await Utils.fileFromBytes(avatarUri),
+        );
+      } else {
+        _isLogged = false;
+      }
     }
-
+    print(_currentUser?.username ?? "None");
     notifyListeners();
   }
 
+  void setLogged(bool value) {
+    _isLogged = value;
+    notifyListeners();
+  }
 
   Future<void> logoutUser() async {
-    isLogged = false;
+    _isLogged = false;
     notifyListeners();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('isLoggedIn');
+    await prefs.clear();
   }
 
+  @override
+  void dispose() {
+  }
+
+  Future<bool> checkIsLogged() async => _isLogged;
 }

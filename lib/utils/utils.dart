@@ -6,6 +6,7 @@ import 'dart:io';
 
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
@@ -78,6 +79,32 @@ class Utils {
     await avatarFile.writeAsBytes(avatarBytes);
 
     return avatarFile;
+  }
+
+  static Future<bool> _showExitConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.exitConfirmText),
+          content: Text(AppLocalizations.of(context)!.exitConfirmBody),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(AppLocalizations.of(context)!.cancelButton),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(AppLocalizations.of(context)!.exitButton),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
   }
 
 }

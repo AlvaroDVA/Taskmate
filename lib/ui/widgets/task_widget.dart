@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/models/elementTasks/image_element.dart';
 import 'package:taskmate_app/models/elementTasks/sublist.dart';
@@ -9,35 +10,56 @@ import 'package:taskmate_app/models/elementTasks/video_element.dart';
 import 'package:taskmate_app/models/task.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:taskmate_app/services/service_locator.dart';
+import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/widgets/element_task_widget.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskWidget extends StatefulWidget{
 
-  final Task actualTask;
+  Task actualTask;
+  Function onDelete;
 
   TaskWidget({
-    required this.actualTask
+    required this.actualTask,
+    required this.onDelete,
   });
 
   @override
   State<StatefulWidget> createState() => _TaskWidget();
+
 }
 
-class _TaskWidget extends State<TaskWidget> {
+class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
 
   AppConfig appConfig = ServiceLocator.appConfig;
   TextEditingController textEditingController = TextEditingController();
+  TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void initState() {
     textEditingController.text = widget.actualTask.title;
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused) {
+      tasksLoadedState.saveCurrentTask();
+    } else if (state == AppLifecycleState.resumed) {
+      tasksLoadedState.saveCurrentTask();
+    } else if (state == AppLifecycleState.inactive) {
+      tasksLoadedState.saveCurrentTask();
+    } else if (state == AppLifecycleState.detached) {
+      tasksLoadedState.saveCurrentTask();
+    }
   }
 
   @override
@@ -94,6 +116,7 @@ class _TaskWidget extends State<TaskWidget> {
                       onChanged: (_) {
                         setState(() {
                           task.isChecked = !task.isChecked;
+                          tasksLoadedState.saveCurrentTask();
                         });
                       },
                   ),
@@ -106,11 +129,39 @@ class _TaskWidget extends State<TaskWidget> {
             separatorBuilder: (_, index) => SizedBox(height: padding),
             itemCount: task.elementList.length,
             itemBuilder: (_, index) {
-              return ElementTaskWidget(elementTask: task.elementList[index]);
+              return ElementTaskWidget(
+                  elementTask: task.elementList[index],
+                  deleteSelf: () {
+                    setState(() {
+                      widget.actualTask.elementList.removeAt(index);
+                      tasksLoadedState.saveCurrentTask();
+                    });
+                  },
+              );
             },
           ),
           Row(
             children: [
+              Padding(
+                padding: const EdgeInsets.all(padding),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: appConfig.theme.lightColor2,
+                      border: Border.all(
+                        color: appConfig.theme.darkAuxColor,
+                        width: 2.0,
+                      )
+                  ),
+                  child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          widget.onDelete();
+                        });
+                      },
+                      icon: Icon(Icons.delete)
+                  ),
+                ),
+              ),
               Spacer(),
               // TextElement
               Padding(
@@ -165,6 +216,7 @@ class _TaskWidget extends State<TaskWidget> {
                   ),
                 ),
               ),
+              /*
               // VideoElement
               Padding(
                 padding: const EdgeInsets.all(padding),
@@ -180,7 +232,7 @@ class _TaskWidget extends State<TaskWidget> {
                       onPressed: () {
                         setState(() {
                           task.elementList.add(
-                            VideoElement(
+                            VideoElementOwn(
                                 elementId: uuid.v1(),
                                 taskOrder: task.elementList.length,
                                 video: null
@@ -191,7 +243,8 @@ class _TaskWidget extends State<TaskWidget> {
                       icon: Icon(Icons.movie)
                   ),
                 ),
-              ),
+              )
+             */
               Padding(
                 padding: const EdgeInsets.all(padding),
                 child: Container(

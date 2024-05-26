@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taskmate_app/ui/pages/home_page.dart';
 import 'package:taskmate_app/ui/pages/login_screen.dart';
 import 'package:uuid/uuid.dart';
 
@@ -27,6 +28,7 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController repeatPasswordController = TextEditingController();
   final UserController userController = ServiceLocator.userController;
   final AppConfig appConfig = ServiceLocator.appConfig;
+  final authState = ServiceLocator.authState;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,7 @@ class RegisterScreen extends StatelessWidget {
                 textNotLink : AppLocalizations.of(context)!.loginUserTextNotLink,
                 textLink:  AppLocalizations.of(context)!.loginUserLink,
                 onTap: () {
+                  authState.setErrorMessage(null);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -88,7 +91,6 @@ class RegisterScreen extends StatelessWidget {
   }
 
   void submiteRegister(BuildContext context) {
-    final authState = Provider.of<AuthState>(context, listen: false);
     if (usernameController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
@@ -132,7 +134,7 @@ class RegisterScreen extends StatelessWidget {
   }
 
   void correctLogin(AuthState authState, Map<String, dynamic> res, BuildContext context) async {
-    authState.isLogged = true;
+    authState.setLogged(true);
     authState.setCurrentUser(
         User(
           idUser : res['_id'],
@@ -145,7 +147,7 @@ class RegisterScreen extends StatelessWidget {
     authState.setErrorMessage(null);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => DayTaskScreen()),
+      MaterialPageRoute(builder: (context) => HomePage()),
     );
   }
 

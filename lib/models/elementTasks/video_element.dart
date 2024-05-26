@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:taskmate_app/models/elementTasks/element_task.dart';
 
-class VideoElement extends ElementTask {
+class VideoElementOwn extends ElementTask {
 
-  File? video;
+  String? video;
 
-  VideoElement({
+  VideoElementOwn({
     required super.elementId,
     required super.taskOrder,
     required this.video
@@ -15,18 +15,12 @@ class VideoElement extends ElementTask {
 
   @override
   Map<String, dynamic> toJson() {
-    List<int>? videoBytes = video?.readAsBytesSync();
-    var send;
-    if (videoBytes != null) {
-      send = base64Encode(videoBytes);
-    }else {
-      send = "none";
-    }
     return {
       "elementId" : elementId,
       "taskOrder" : taskOrder,
-      "video" : send,
+      "video" : video,
     };
+
   }
 
 }

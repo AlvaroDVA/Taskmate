@@ -5,7 +5,9 @@ import 'package:taskmate_app/controllers/user_controller.dart';
 import 'package:taskmate_app/main.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/pages/day_task_screen.dart';
+import 'package:taskmate_app/ui/pages/home_page.dart';
 import 'package:taskmate_app/ui/pages/register_screen.dart';
 
 import '../../config/app_config.dart';
@@ -18,12 +20,12 @@ import '../widgets/forms_widgets/link_form.dart';
 import '../widgets/forms_widgets/text_block_form.dart';
 
 class LoginScreen extends StatelessWidget {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final UserController userController = ServiceLocator.userController;
-  final AppConfig appConfig = ServiceLocator.appConfig;
-
-  LoginScreen({super.key});
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  UserController userController = ServiceLocator.userController;
+  AppConfig appConfig = ServiceLocator.appConfig;
+  AuthState authState = ServiceLocator.authState;
+  TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,7 @@ class LoginScreen extends StatelessWidget {
                 textNotLink : AppLocalizations.of(context)!.notAccount,
                 textLink:  AppLocalizations.of(context)!.registerUserLink,
                 onTap: () {
+                  authState.setErrorMessage(null);
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterScreen()),
@@ -76,20 +79,20 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future<void> submitLogin(BuildContext context) async {
-    final authState = Provider.of<AuthState>(context, listen: false);
+
     if (usernameController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var res = await userController.loginUser(usernameController.text, passwordController.text);
       if (res['error'] != null) {
-        incorrectLogin(res, context, authState);
+        incorrectLogin(res, context);
       } else {
-        correctLogin(authState, res, context);
+        correctLogin(res, context);
       }
     } else {
       authState.setErrorMessage(AppLocalizations.of(context)!.emptyFields);
     }
   }
 
-  void incorrectLogin(Map<String, dynamic> res, BuildContext context, AuthState authState) {
+  void incorrectLogin(Map<String, dynamic> res, BuildContext context ) {
     var errorCode = res['error'];
     var errorMessage = Utils.getFormsErrorMessage(
         errorCode.toString(),
@@ -98,8 +101,8 @@ class LoginScreen extends StatelessWidget {
     authState.setErrorMessage(errorMessage);
   }
 
-  void correctLogin(AuthState authState, Map<String, dynamic> res, BuildContext context) async {
-    authState.isLogged = true;
+  void correctLogin(Map<String, dynamic> res, BuildContext context) async {
+    authState.setLogged(true);
     authState.setCurrentUser(
         User(
           idUser : res['_id'],
@@ -112,7 +115,7 @@ class LoginScreen extends StatelessWidget {
     authState.setErrorMessage(null);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => DayTaskScreen()),
+      MaterialPageRoute(builder: (context) => HomePage()),
     );
   }
 }

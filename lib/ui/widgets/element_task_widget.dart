@@ -10,9 +10,10 @@ import 'package:taskmate_app/models/elementTasks/element_task.dart';
 import 'package:taskmate_app/models/elementTasks/sublist_element.dart';
 import 'package:taskmate_app/models/elementTasks/text_element.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:video_player/video_player.dart';
-import 'package:video_player_win/video_player_win.dart';
-
+import 'package:taskmate_app/services/service_locator.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../config/app_config.dart';
 import '../../models/elementTasks/image_element.dart';
@@ -21,8 +22,11 @@ import 'elements_widgets/sublist_element_state.dart';
 
 class ElementTaskWidget extends StatefulWidget {
   final ElementTask elementTask;
+  Function deleteSelf;
 
-  ElementTaskWidget({super.key, required this.elementTask}) {
+  ElementTaskWidget({super.key,
+    required this.elementTask,
+    required this.deleteSelf,}) {
     print(elementTask.runtimeType);
   }
 
@@ -37,12 +41,14 @@ class ElementTaskWidget extends StatefulWidget {
         return _ImageElementState(element: elementTask as ImageElement);
       case SublistElement:
         return SublistElementState(element: elementTask as SublistElement);
-      case VideoElement:
-        return _VideoElementState(element: elementTask as VideoElement);
+      case VideoElementOwn:
+        return _VideoElementState(element: elementTask as VideoElementOwn);
       default:
         throw TaskElementNotExist("This element task type not exist");
     }
   }
+
+
 
 }
 
@@ -122,16 +128,14 @@ class _ImageElementState extends State<ElementTaskWidget> {
     );
 
     if (confirmed != null && confirmed) {
-      setState(() {
-        element.image = null;
-      });
+      widget.deleteSelf();
     }
   }
 }
 
 class _TextElementState extends State<ElementTaskWidget>{
 
-  late AppConfig appConfig;
+  AppConfig appConfig = ServiceLocator.appConfig;
   TextElement element;
   TextEditingController textEditingController = TextEditingController();
 
@@ -141,7 +145,6 @@ class _TextElementState extends State<ElementTaskWidget>{
 
   @override
   Widget build(BuildContext context) {
-    appConfig = Provider.of<AppConfig>(context);
     double _padding = 8;
 
 
@@ -172,34 +175,43 @@ class _TextElementState extends State<ElementTaskWidget>{
   }
 }
 
-
-
 class _VideoElementState extends State<ElementTaskWidget> {
-  final picker = ImagePicker();
-  WinVideoPlayerController? _controller;
-  VideoElement element;
+  YoutubePlayerController? _youtubeController;
+  late final WebViewController _webViewController;
+  VideoElementOwn element;
 
-  _VideoElementState({
-      required this.element,
-  });
+  _VideoElementState({required this.element});
 
   @override
   void initState() {
     super.initState();
+    _webViewController = WebViewController();
     if (element.video != null) {
-      _initializeVideo(element.video!);
+      if (_isYouTubeUrl(element.video!)) {
+        _initializeYouTubeVideo(element.video!);
+      } else {
+        _initializeWebView(element.video!);
+      }
     }
   }
 
-  void _initializeVideo(File videoFile) {
-    _controller = WinVideoPlayerController.file(videoFile)
-        ..initialize().then((_) {
-          setState(() {
-            if (_controller!.value.isInitialized) {
-              _controller?.pause();
-            }
-          });
-        });
+  bool _isYouTubeUrl(String url) {
+    return YoutubePlayer.convertUrlToId(url) != null;
+  }
+
+  void _initializeYouTubeVideo(String url) {
+    _youtubeController = YoutubePlayerController(
+      initialVideoId: YoutubePlayer.convertUrlToId(url)!,
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+      ),
+    );
+  }
+
+  void _initializeWebView(String url) {
+    _webViewController
+      ..loadRequest(Uri.parse(url))
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
   }
 
   @override
@@ -219,20 +231,23 @@ class _VideoElementState extends State<ElementTaskWidget> {
       },
       child: Center(
         child: Container(
+          height: 200,
           decoration: BoxDecoration(
             color: Colors.grey[200],
             border: Border.all(color: Colors.black54),
           ),
           child: element.video != null
-              ? _controller!.value.isInitialized
-              ? AspectRatio(
-                aspectRatio: _controller!.value.aspectRatio,
-                child: WinVideoPlayer(_controller!),
-              )
-              : const Center(child: CircularProgressIndicator())
+              ? _isYouTubeUrl(element.video!)
+              ? YoutubePlayer(
+            controller: _youtubeController!,
+            showVideoProgressIndicator: true,
+          )
+              : WebViewWidget(
+            controller: _webViewController,
+          )
               : Center(
             child: Text(
-              AppLocalizations.of(context)!.videoSelectorText,
+              "Select a video",
               style: TextStyle(color: Colors.black54),
             ),
           ),
@@ -245,16 +260,16 @@ class _VideoElementState extends State<ElementTaskWidget> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.deleteVideoContent),
-        content: Text(AppLocalizations.of(context)!.deleteVideoContent),
+        title: Text("Delete Video"),
+        content: Text("Are you sure you want to delete this video?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(AppLocalizations.of(context)!.cancelButton),
+            child: Text("Cancel"),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.of(context)!.deleteButton),
+            child: Text("Delete"),
           ),
         ],
       ),
@@ -263,34 +278,67 @@ class _VideoElementState extends State<ElementTaskWidget> {
     if (confirmed != null && confirmed) {
       setState(() {
         element.video = null;
-        _controller?.pause();
+        _youtubeController?.pause();
+        _webViewController.clearCache();
       });
     }
   }
 
   void _togglePlayPause() {
     setState(() {
-      if (_controller!.value.isPlaying) {
-        _controller!.pause();
+      if (_youtubeController != null) {
+        if (_youtubeController!.value.isPlaying) {
+          _youtubeController!.pause();
+        } else {
+          _youtubeController!.play();
+        }
       } else {
-        _controller!.play();
+        // Handle WebView pause/play logic if needed
       }
     });
   }
 
   Future<void> _selectVideo() async {
-    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-    if (pickedFile != null) {
+    // Implement your video URL selection logic here
+    // For example, you might show a dialog to enter a URL
+    final urlController = TextEditingController();
+    final enteredUrl = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Enter Video URL"),
+        content: TextField(
+          controller: urlController,
+          decoration: InputDecoration(hintText: "Enter video URL"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(urlController.text),
+            child: Text("OK"),
+          ),
+        ],
+      ),
+    );
+
+    if (enteredUrl != null && enteredUrl.isNotEmpty) {
       setState(() {
-        element.video = File(pickedFile.path);
-        _initializeVideo(element.video!);
+        element.video = enteredUrl;
+        if (_isYouTubeUrl(enteredUrl)) {
+          _initializeYouTubeVideo(enteredUrl);
+        } else {
+          _initializeWebView(enteredUrl);
+        }
       });
     }
   }
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _youtubeController?.dispose();
     super.dispose();
   }
 }
+

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:provider/provider.dart';
+import 'package:taskmate_app/services/service_locator.dart';
 
 import '../../../config/app_config.dart';
 
@@ -20,7 +21,7 @@ class LinkForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppConfig appConfig = Provider.of<AppConfig>(context);
+    AppConfig appConfig = ServiceLocator.appConfig;
 
     return RichText(
       text: TextSpan(
