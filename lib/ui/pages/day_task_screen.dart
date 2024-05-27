@@ -13,6 +13,8 @@ import 'package:taskmate_app/models/elementTasks/element_task.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:taskmate_app/ui/widgets/theme_widgets/exit_dialog_widget.dart';
+import 'package:taskmate_app/ui/widgets/theme_widgets/standard_dialog_widget.dart';
 import '../widgets/main_menu.dart';
 import 'package:taskmate_app/ui/widgets/task_widget.dart';
 import 'package:uuid/uuid.dart';
@@ -59,39 +61,8 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
 
   @override
   void onWindowClose() async {
-    bool isConfirmed = await _showExitConfirmationDialog();
-    if (isConfirmed) {
-      windowManager.destroy();
-    }
-  }
-
-  Future<bool> _showExitConfirmationDialog() async {
     dayController.saveDay(tasksLoadedState.currentDay, authState.currentUser);
-    return await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.exitConfirmText),
-          content: Text(AppLocalizations.of(context)!.exitConfirmBody),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text(AppLocalizations.of(context)!.cancelButton),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text(AppLocalizations.of(context)!.exitButton),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
   }
-
 
   Future<void> loadTasks() async {
     print(authState.isLogged);
@@ -166,14 +137,14 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
   void _showColorPickerDialog() async {
     ColorTask? selectedColor = await showDialog<ColorTask>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.selectColorText),
+      builder: (context) => StandardDialog(
+        title: AppLocalizations.of(context)!.selectColorText,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: ColorTask.values.map((color) {
             return ListTile(
               leading: CircleAvatar(backgroundColor: Color(int.parse('0xff${color.hex}'))),
-              title: Text(generarColorTraducido(color, context).split('.').last),
+              title: DialogTextTile(text : generarColorTraducido(color, context).split('.').last),
               onTap: () => Navigator.of(context).pop(color),
             );
           }).toList(),
@@ -225,8 +196,7 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
   Future<void> _initialice() async {
 
     await authState.checkIsLogged();
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA${authState.currentUser?.username ?? "None"}");
-    await tasksLoadedState.loadCurrentDay(DateTime.now());
+    await tasksLoadedState.loadCurrentDay(tasksLoadedState.currentDay.date);
     WidgetsBinding.instance.addObserver(this);
     windowManager.setPreventClose(true);
     windowManager.addListener(this);

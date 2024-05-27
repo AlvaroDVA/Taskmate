@@ -41,6 +41,11 @@
   "closeSessionText" : "Log out",
   "lightThemeText" : "Light",
   "darkThemeText" : "Dark",
+  "deleteUserWarning" : "Are you sure you want to delete your user?",
+  "invalidEmailFormat": "Invalid Email Format",
+  "passwordTooShort": "Password must be at least 8 characters long",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "invalidUsername": "Username must be between 4 and 20 characters long",
 
   "err1001": "UserID already exists",
   "err1002": "User Email already exists",

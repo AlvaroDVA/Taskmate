@@ -9,6 +9,7 @@ import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/pages/day_task_screen.dart';
 import 'package:taskmate_app/ui/pages/home_page.dart';
 import 'package:taskmate_app/ui/pages/register_screen.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../config/app_config.dart';
 import '../../models/user.dart';
@@ -18,8 +19,14 @@ import '../widgets/forms_widgets/error_box.dart';
 import '../widgets/forms_widgets/form_submit_button.dart';
 import '../widgets/forms_widgets/link_form.dart';
 import '../widgets/forms_widgets/text_block_form.dart';
+import '../widgets/theme_widgets/exit_dialog_widget.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() => LoginScreenState();
+}
+
+class LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver, WindowListener{
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   UserController userController = ServiceLocator.userController;
@@ -28,13 +35,41 @@ class LoginScreen extends StatelessWidget {
   TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    windowManager.setPreventClose(true);
+    windowManager.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  void onWindowClose() async {
+    bool isConfirmed = await _showExitConfirmationDialog();
+    if (isConfirmed) {
+      windowManager.destroy();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     double paddingValue = 20.0;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.loginText),
+        title: Text(
+            AppLocalizations.of(context)!.loginText,
+            style: appConfig.theme.loginFormTitle,
+        ),
+        backgroundColor: appConfig.theme.backgroundLoginColor,
       ),
+      backgroundColor: appConfig.theme.backgroundLoginColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -53,11 +88,11 @@ class LoginScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(paddingValue),
               child: FormSubmitButton(
-                onPressed: () async {
-                  await submitLogin(context);
-                },
-                textButton: AppLocalizations.of(context)!.loginText),
-              ),
+                  onPressed: () async {
+                    await submitLogin(context);
+                  },
+                  textButton: AppLocalizations.of(context)!.loginText),
+            ),
             Padding(
               padding: EdgeInsets.all(paddingValue),
               child: LinkForm(
@@ -117,6 +152,15 @@ class LoginScreen extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => HomePage()),
     );
+  }
+
+  Future<bool> _showExitConfirmationDialog() async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return ExitDialog();
+      },
+    ) ?? false;
   }
 }
 

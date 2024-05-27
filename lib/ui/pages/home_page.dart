@@ -8,6 +8,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../states/screens_state.dart';
 import '../widgets/main_menu.dart';
+import '../widgets/theme_widgets/exit_dialog_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,25 +80,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver, WindowL
     return await showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.exitConfirmText),
-          content: Text(AppLocalizations.of(context)!.exitConfirmBody),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text(AppLocalizations.of(context)!.cancelButton),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text(AppLocalizations.of(context)!.exitButton),
-            ),
-          ],
-        );
+        return ExitDialog();
       },
     ) ?? false;
   }
 }
+

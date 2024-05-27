@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskmate_app/config/app_config.dart';
@@ -10,6 +13,8 @@ import 'package:taskmate_app/themes/light_theme.dart';
 import 'package:taskmate_app/themes/theme.dart';
 import '../../enums/lenguages.dart';
 import '../widgets/theme_widgets/settings_card.dart';
+import '../widgets/theme_widgets/standard_dialog_widget.dart';
+import 'login_screen.dart';
 
 class SettingsScreeen extends StatefulWidget {
   @override
@@ -31,7 +36,7 @@ class SettingScreenState extends State<SettingsScreeen> {
       appBar: AppBar(
         backgroundColor: appConfig.theme.primaryColor,
         title: Text(
-            AppLocalizations.of(context)!.settingsPageTitle,
+          AppLocalizations.of(context)!.settingsPageTitle,
           style: appConfig.theme.title,
         ),
       ),
@@ -44,9 +49,14 @@ class SettingScreenState extends State<SettingsScreeen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  backgroundImage: FileImage(authState.currentUser!.avatar),
-                  radius: 50,
+                GestureDetector(
+                  onTap: () {
+                    _openAvatarChangeDialog();
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: FileImage(authState.currentUser!.avatar),
+                    radius: 50,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -88,7 +98,9 @@ class SettingScreenState extends State<SettingsScreeen> {
                       leadingIcon: Icons.delete,
                       title: AppLocalizations.of(context)!.deleteUserText,
                       onTap: () {
-                        // Lógica para eliminar el usuario
+                        setState(() {
+                          _showDeleteUserModal(context);
+                        });
                       },
                     ),
                   ],
@@ -96,8 +108,6 @@ class SettingScreenState extends State<SettingsScreeen> {
               },
             ),
           ),
-
-
         ],
       ),
     );
@@ -108,13 +118,14 @@ class SettingScreenState extends State<SettingsScreeen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.changeLanguageText),
+          return StandardDialog(
+            title: AppLocalizations.of(context)!.changeLanguageText,
             content: SingleChildScrollView(
               child: Column(
                 children: Language.values.map((language) {
                   return ListTile(
-                    title: Text(_getLanguageName(language, context)),
+                    title: DialogTextTile(
+                        text: _getLanguageName(language, context)),
                     onTap: () {
                       appConfig.changeLanguage(language);
                       Navigator.pop(context); // Cierra el diálogo
@@ -143,13 +154,13 @@ class SettingScreenState extends State<SettingsScreeen> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(AppLocalizations.of(context)!.changeThemeText),
+          return StandardDialog(
+            title: AppLocalizations.of(context)!.changeThemeText,
             content: SingleChildScrollView(
               child: Column(
                 children: AppTheme.values.map((theme) {
                   return ListTile(
-                    title: Text(_getThemeName(theme, context)),
+                    title: DialogTextTile(text: _getThemeName(theme, context)),
                     onTap: () {
                       appConfig.changeTheme(toTheme(theme));
                       Navigator.pop(context); // Cierra el diálogo
@@ -181,8 +192,60 @@ class SettingScreenState extends State<SettingsScreeen> {
         return AppLocalizations.of(context)!.darkThemeText;
     }
   }
+
+  void _showDeleteUserModal(BuildContext context) {
+    setState(() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StandardDialog(
+              title: AppLocalizations.of(context)!.deleteUserWarning,
+              content: Row(
+                children: [
+                  Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text(AppLocalizations.of(context)!.cancelButton),
+                    style: appConfig.theme.modalButtonText,
+                  ),
+                  Spacer(),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                        authState.deleteUser();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!.deleteButton,
+                      ),
+                      style: appConfig.theme.deleteUserButtonStyle
+                  ),
+                  Spacer(),
+                ],
+              )
+          );
+        },
+      );
+    });
+  }
+
+  Future<void> _openAvatarChangeDialog() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowCompression: true,
+    );
+
+    if (result != null) {
+      setState(() async {
+        await authState.changeAvatar(result.files.single.path);
+      });
+    }
+  }
+
 }
-
-
-
-

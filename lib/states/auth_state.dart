@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskmate_app/services/service_locator.dart';
 
 import '../models/user.dart';
 import '../utils/utils.dart';
@@ -82,9 +85,24 @@ class AuthState extends ChangeNotifier {
     await prefs.clear();
   }
 
+  Future<void> deleteUser() async {
+    await ServiceLocator.userController.deleteUser(currentUser);
+    await logoutUser();
+  }
+
   @override
   void dispose() {
   }
 
   Future<bool> checkIsLogged() async => _isLogged;
+
+  Future<void> changeAvatar(String? avatarUrl) async {
+    if (avatarUrl != null && currentUser != null) {
+      currentUser?.avatar = File(avatarUrl);
+      await ServiceLocator.userController.updateAvatar(currentUser);
+    }
+    notifyListeners();
+  }
+
+
 }

@@ -29,12 +29,12 @@ class LinkForm extends StatelessWidget {
         children: <TextSpan>[
           TextSpan(
             text: textNotLink,
-            style: TextStyle(color: appConfig.theme.darkAuxColor),
+            style: TextStyle(color: appConfig.theme.formTextNoLink),
           ),
           TextSpan(
               text:textLink,
               style: TextStyle(
-                color: appConfig.theme.primaryColor,
+                color: appConfig.theme.formTextLink,
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = onTap

@@ -12,6 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/widgets/element_task_widget.dart';
+import 'package:taskmate_app/ui/widgets/theme_widgets/custom_checkbox_widget.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskWidget extends StatefulWidget{
@@ -111,22 +112,16 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
                 ),
                 Transform.scale(
                   scale: scaleTransform,
-                  child: Checkbox(
-                    fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return appConfig.theme.lightColor2;
-                      }
-                      return appConfig.theme.greyColor;
-                    }),
-                    checkColor: appConfig.theme.darkAuxColor,
+                  child: CustomCheckbox(
                       value: task.isChecked,
-                      onChanged: (_) {
+                      onChanged: (bool? newValue) {
                         setState(() {
                           task.isChecked = !task.isChecked;
                           tasksLoadedState.saveCurrentTask();
-                        });
+                        }
+                        );
                       },
-                  ),
+                    )
                 )
               ],
             ),

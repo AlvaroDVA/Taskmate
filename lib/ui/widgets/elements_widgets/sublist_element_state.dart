@@ -7,6 +7,8 @@ import '../../../services/service_locator.dart';
 import '../element_task_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../theme_widgets/custom_checkbox_widget.dart';
+
 class SublistElementState extends State<ElementTaskWidget> {
   final SublistElement element;
   late final AppConfig appConfig;
@@ -76,7 +78,7 @@ class SublistElementState extends State<ElementTaskWidget> {
       padding: EdgeInsets.all(_padding),
       child: Container(
         decoration: BoxDecoration(
-          color: appConfig.theme.lightColor,
+          color: appConfig.theme.sublistColor,
           border: Border.all(
             color: Colors.black,
             width: 2.0,
@@ -107,11 +109,14 @@ class SublistElementState extends State<ElementTaskWidget> {
                             element.sublist[index].text = _sublistControllers[index].text;
                           });
                         },
+                        style: appConfig.theme.text,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: AppLocalizations.of(context)!.sublistHint,
+                          hintStyle: appConfig.theme.text,
                           icon: IconButton(
                             icon : Icon(Icons.delete),
+                            color: appConfig.theme.iconColor,
                             onPressed: () {
                               setState(() {
                                 element.sublist.remove(element.sublist[index]);
@@ -123,14 +128,14 @@ class SublistElementState extends State<ElementTaskWidget> {
                       ),
                     ),
                     Spacer(),
-                    Checkbox(
+                    CustomCheckbox(
                       value: element.sublist[index].isChecked,
                       onChanged: (_) {
                         setState(() {
                           element.sublist[index].isChecked = !element.sublist[index].isChecked;
                         });
                       },
-                    ),
+                    )
                   ],
                 ),
               );

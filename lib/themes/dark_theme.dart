@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:taskmate_app/themes/theme.dart';
 
-class LightTheme implements CustomTheme {
+class DarkTheme implements CustomTheme {
   @override
-  Color primaryColor = const Color(0xffFFA500);
+  Color primaryColor = const Color(0xff121212);
   @override
-  Color secondaryColor = const Color(0xffB38B00);
+  Color secondaryColor = const Color(0xff282828);
   @override
-  Color lightColor = const Color(0xffFFF1BF);
+  Color lightColor = const Color(0xffffa500);
   @override
   Color lightColor2 = const Color(0xffFFE380);
   @override
@@ -15,21 +15,11 @@ class LightTheme implements CustomTheme {
   @override
   Color darkAuxColor = const Color(0xff000000);
   @override
-  Color errorColor = const Color(0xffda0c0c);
-  @override
   Color greyColor = const Color(0xff3f3f3f);
   @override
-  Color iconColor = const Color(0xffFFFFFF);
+  Color errorColor = const Color(0xffda0c0c);
   @override
-  Color shadowColor = const Color(0xff68615a);
-  @override
-  Color sublistColor = const Color(0xff68615a);
-  @override
-  Color modalBackgroundColor = const Color(0xffFFFFFF);
-  @override
-  Color backgroundLoginColor = const Color(0xffFFFFFF);
-  @override
-  Color formBlockColor = const Color(0xffffa500);
+  Color modalBackgroundColor = const Color(0xff3f3f3f);
 
   @override
   late TextStyle diamongNotSelectedText;
@@ -47,6 +37,27 @@ class LightTheme implements CustomTheme {
   late TextStyle title;
 
   @override
+  Color iconColor = const Color(0xffB38B00);
+
+  @override
+  Color shadowColor = const Color(0xff282828);
+
+  @override
+  Color sublistColor = const Color(0xff121212);
+
+  @override
+  Color backgroundLoginColor = const Color(0xff282828);
+
+  @override
+  Color formBlockColor = const Color(0xffffa500);
+
+  @override
+  Color formTextLink = const Color(0xffffa500);
+
+  @override
+  Color formTextNoLink = const Color(0xffFFFFFF);
+
+  @override
   late ButtonStyle modalButtonText;
 
   @override
@@ -56,44 +67,44 @@ class LightTheme implements CustomTheme {
   late TextStyle modalTitle;
 
   @override
-  Color formTextLink = Color(0xffffa500);
-
-  @override
-  Color formTextNoLink=  const Color(0xff000000);
-
-  @override
   late ButtonStyle loginButtonStyle;
 
   @override
   late TextStyle loginFormTitle;
+
   @override
   late ButtonStyle deleteUserButtonStyle;
 
-  LightTheme() {
+  DarkTheme() {
     title = TextStyle(
       color: auxColor,
       fontFamily: "Space Mono",
       fontSize: 16,
+      fontWeight: FontWeight.bold,
     );
+
     subtitle = TextStyle(
+      color: auxColor.withOpacity(0.8),
+      fontFamily: "Space Mono",
+      fontSize: 14,
+    );
+
+    text = TextStyle(
       color: auxColor,
       fontFamily: "Space Mono",
       fontSize: 14,
     );
-    text = TextStyle(
-      color: auxColor,
-      fontFamily: "Space Mono",
-      fontSize: 12,
-    );
+
     diamongNotSelectedText = TextStyle(
+      color: secondaryColor,
+      fontFamily: "Space Mono",
+      fontSize: 14,
+    );
+
+    diamongSelectedText = TextStyle(
       color: auxColor,
       fontFamily: "Space Mono",
-      fontSize: 12,
-    );
-    diamongSelectedText = TextStyle(
-      color: lightColor,
-      fontFamily: "Space Mono",
-      fontSize: 12,
+      fontSize: 14,
     );
     modalButtonText = ButtonStyle(
       textStyle: MaterialStateProperty.all<TextStyle>(
@@ -102,30 +113,30 @@ class LightTheme implements CustomTheme {
           fontSize: 16,
         ),
       ),
-      foregroundColor: MaterialStateProperty.all<Color>(primaryColor),
+      foregroundColor: MaterialStateProperty.all<Color>(const Color(0xffffa500)),
     );
     modalText = TextStyle(
+      color: const Color(0xffFFFFFF) ,
       fontFamily: "Space Mono",
       fontSize: 14,
     );
     modalTitle = TextStyle(
+      color: const Color(0xffFFFFFF) ,
       fontFamily: "Space Mono",
       fontSize: 20,
       fontWeight: FontWeight.bold,
     );
     loginButtonStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(Color(0xffffa500)),
       textStyle: MaterialStateProperty.all<TextStyle>(
         TextStyle(
           fontFamily: "Space Mono",
           fontSize: 16,
         ),
       ),
-      foregroundColor: MaterialStateProperty.all<Color>(
-          const Color(0xffFFFFFF)),
+      foregroundColor: MaterialStateProperty.all<Color>(Color(0xffffa500)),
     );
     loginFormTitle = TextStyle(
-      color: Color(0xffffa500),
+      color: Color(0xffFFFFFF),
       fontFamily: "Space Mono",
       fontSize: 16,
     );
@@ -139,9 +150,18 @@ class LightTheme implements CustomTheme {
       ),
       foregroundColor: MaterialStateProperty.all<Color>(Color(0xffffffff)),
     );
+
   }
 
-  String get name => "light";
+  String get name => "dark";
+
+
+
+
+
+
+
+
 
 
 }
