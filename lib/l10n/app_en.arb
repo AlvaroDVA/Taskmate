@@ -46,6 +46,8 @@
   "passwordTooShort": "Password must be at least 8 characters long",
   "passwordsDoNotMatch": "Passwords do not match",
   "invalidUsername": "Username must be between 4 and 20 characters long",
+  "calendarPageTitle" : "Calendar",
+  "notebookScreenTitle" : "Notebook",
 
   "err1001": "UserID already exists",
   "err1002": "User Email already exists",

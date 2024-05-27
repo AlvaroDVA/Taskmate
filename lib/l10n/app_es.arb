@@ -47,8 +47,8 @@
   "passwordTooShort" : "La contraseña tiene que tener mas de 8 Caracteres",
   "passwordsDoNotMatch" : "Las contraseñas no coinciden",
   "invalidUsername" : "El usuario tiene que tener entre 4 y 20 caracteres",
-
-
+  "calendarPageTitle" : "Calendario",
+  "notebookScreenTitle" : "Cuaderno",
 
   "err1001": "La ID de este usuario ya existe",
   "err1002": "Ya existe un usuario con este email",

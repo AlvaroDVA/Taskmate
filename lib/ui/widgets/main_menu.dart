@@ -41,6 +41,18 @@ class MainMenuState extends State<MainMenu> {
                 screenState.setTaskScreen();
               },
             ),
+            MenuTile(icon: Icons.calendar_month_rounded,
+                text: AppLocalizations.of(context)!.calendarPageTitle,
+                event: () {
+                  screenState.setCalendarScreen();
+                }
+            ),
+            MenuTile(icon: Icons.note_alt_outlined,
+                text: AppLocalizations.of(context)!.notebookScreenTitle,
+                event: () {
+                  screenState.setNotebookScreen();
+                }
+            ),
             Expanded(
               child: Container(),
             ),
