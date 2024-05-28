@@ -68,7 +68,11 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver, WindowL
               ],
             );
           } else {
-            return screenState.actualScreen;
+            return Consumer<ScreenState>(
+                builder: (BuildContext context, ScreenState screenState, Widget? child) {
+                  return screenState.actualScreen;
+              }
+            );
           }
         },
       ),

@@ -28,6 +28,7 @@ abstract class CustomTheme {
   late TextStyle modalTitle;
   late TextStyle modalText;
   late TextStyle loginFormTitle;
+
   late ButtonStyle modalButtonText;
 
   late Color formBlockColor;
@@ -38,6 +39,21 @@ abstract class CustomTheme {
 
   late ButtonStyle deleteUserButtonStyle;
 
+  late BoxDecoration todayDecoration;
+
+  late BoxDecoration defaultDecoration;
+  late BoxDecoration weekendDecoration;
+  late BoxDecoration outsideDecoration;
+  late BoxDecoration markedDecoration;
+  late BoxDecoration selectedDecoration;
+
+  late TextStyle defaultTextStyle;
+  late TextStyle weekendTextStyle;
+  late TextStyle holidayTextStyle;
+  late TextStyle outsideTextStyle;
+  late TextStyle selectedTextStyle;
+  late TextStyle todayTextStyle;
+  late TextStyle dayWeekTitle;
 
   factory CustomTheme.fromProperties(String theme) {
     if (theme == "light") {

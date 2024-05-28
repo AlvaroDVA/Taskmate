@@ -47,6 +47,7 @@ dependencies:
   window_manager: ^0.3.9
   youtube_player_flutter: ^8.0.0
   webview_flutter: ^4.0.0
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:

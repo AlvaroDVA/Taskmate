@@ -143,5 +143,73 @@ class LightTheme implements CustomTheme {
 
   String get name => "light";
 
+  @override
+  BoxDecoration todayDecoration = BoxDecoration(
+    color: const Color(0xffbfe4e2),
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+  );
 
+  @override
+  BoxDecoration defaultDecoration = BoxDecoration(
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+    border: Border.all(color: Colors.grey),
+    color: const Color(0xffB38B00),
+  );
+
+  @override
+  BoxDecoration weekendDecoration = BoxDecoration(
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+    border: Border.all(color: Colors.grey),
+    color: const Color(0xff282828),
+  );
+
+  @override
+  BoxDecoration outsideDecoration = BoxDecoration(
+      shape: BoxShape.rectangle,
+      borderRadius: BorderRadius.circular(8.0),
+      border: Border.all(color: Color(0xffa0c1ca)),
+      color : const Color(0xffe5f3f6)
+  );
+
+  @override
+  BoxDecoration markedDecoration = BoxDecoration(
+    color: Color(0xff9dc3e2),
+    shape: BoxShape.circle,
+  );
+
+  @override
+  BoxDecoration selectedDecoration = BoxDecoration(
+    color: Color(0xff9dc3e2),
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+  );
+
+  @override
+  TextStyle defaultTextStyle = TextStyle(color: Colors.white);
+
+  @override
+  TextStyle holidayTextStyle = TextStyle(color: Colors.blue);
+
+  @override
+  TextStyle outsideTextStyle = TextStyle(color : Colors.black);
+
+  @override
+  TextStyle selectedTextStyle = TextStyle(color: Colors.black);
+
+  @override
+  TextStyle todayTextStyle = TextStyle(color: Colors.black);
+
+  @override
+  TextStyle weekendTextStyle = TextStyle(color: Colors.white);
+
+  @override
+  TextStyle dayWeekTitle = TextStyle(
+    color: Colors.white,
+    fontFamily: "Space Mono",
+    fontSize: 16,
+    height: 1.2
+  );
 }

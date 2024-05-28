@@ -75,6 +75,8 @@ class DarkTheme implements CustomTheme {
   @override
   late ButtonStyle deleteUserButtonStyle;
 
+
+
   DarkTheme() {
     title = TextStyle(
       color: auxColor,
@@ -155,13 +157,73 @@ class DarkTheme implements CustomTheme {
 
   String get name => "dark";
 
+  @override
+  BoxDecoration todayDecoration = BoxDecoration(
+    color: const Color(0xffbfe4e2),
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+  );
 
+  @override
+  BoxDecoration defaultDecoration = BoxDecoration(
+    color: const Color(0xfff4a127),
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+    border: Border.all(color: Colors.grey),
+  );
 
+  @override
+  BoxDecoration weekendDecoration = BoxDecoration(
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+    border: Border.all(color: Colors.grey),
+    color: const Color(0xff282828),
+  );
 
+  @override
+  BoxDecoration outsideDecoration = BoxDecoration(
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+    border: Border.all(color: Colors.grey),
+      color : const Color(0xffe5f3f6)
+  );
 
+  @override
+  BoxDecoration markedDecoration = BoxDecoration(
+    color: Colors.white,
+    shape: BoxShape.circle,
+  );
 
+  @override
+  BoxDecoration selectedDecoration = BoxDecoration(
+    color: Color(0xfffd7f06),
+    shape: BoxShape.rectangle,
+    borderRadius: BorderRadius.circular(8.0),
+  );
 
+  @override
+  TextStyle defaultTextStyle = TextStyle(color: Colors.white);
 
+  @override
+  TextStyle holidayTextStyle = TextStyle(color: Colors.blue);
 
+  @override
+  TextStyle outsideTextStyle = TextStyle(color : Colors.black);
 
+  @override
+  TextStyle selectedTextStyle = TextStyle(color: Colors.white70);
+
+  @override
+  TextStyle todayTextStyle = TextStyle(color: Colors.black);
+
+  @override
+  TextStyle weekendTextStyle = TextStyle(color: Colors.white);
+
+  @override
+  TextStyle dayWeekTitle = TextStyle(
+      color: Colors.white,
+      fontFamily: "Space Mono",
+      fontSize: 16,
+      height: 1.2
+  );
 }

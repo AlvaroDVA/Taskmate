@@ -44,13 +44,17 @@ class MainMenuState extends State<MainMenu> {
             MenuTile(icon: Icons.calendar_month_rounded,
                 text: AppLocalizations.of(context)!.calendarPageTitle,
                 event: () {
-                  screenState.setCalendarScreen();
+                  setState(() {
+                    screenState.setCalendarScreen();
+                  });
                 }
             ),
             MenuTile(icon: Icons.note_alt_outlined,
                 text: AppLocalizations.of(context)!.notebookScreenTitle,
                 event: () {
-                  screenState.setNotebookScreen();
+                  setState(() {
+                    screenState.setNotebookScreen();
+                  });
                 }
             ),
             Expanded(
@@ -68,12 +72,15 @@ class MainMenuState extends State<MainMenu> {
               icon: Icons.logout,
               text: AppLocalizations.of(context)!.closeSessionText,
               event: () async {
-                await taskLoadedState.saveCurrentTask();
-                await authState.logoutUser();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
+                setState(() async {
+                  await taskLoadedState.saveCurrentTask();
+                  await taskLoadedState.setCurrentDay(DateTime.now());
+                  await authState.logoutUser();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                });
               },
             ),
           ],
