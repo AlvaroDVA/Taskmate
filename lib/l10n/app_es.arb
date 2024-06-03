@@ -30,8 +30,8 @@
   "exitConfirmText" : "Confirmar Salida",
   "exitConfirmBody" : "¿Seguro que quieres salir?",
   "exitButton" : "Salir",
-  "deleteImageTitle" : "Eliminar Imagen",
   "deleteImageText" : "¿Quieres eliminar esta imagen?",
+  "deleteImageTitle" : "Eliminar Imagen",
   "englishText" : "Inglés",
   "spanishText" : "Español",
   "deleteUserText" : "Eliminar usuario",
@@ -49,6 +49,7 @@
   "invalidUsername" : "El usuario tiene que tener entre 4 y 20 caracteres",
   "calendarPageTitle" : "Calendario",
   "notebookScreenTitle" : "Cuaderno",
+  "okButton" : "Aceptar",
 
   "err1001": "La ID de este usuario ya existe",
   "err1002": "Ya existe un usuario con este email",
@@ -66,6 +67,9 @@
   "err1060": "Esta tarea ya existe",
   "err1061": "Faltan campos en el JSON",
   "err1062": "Tarea no modificada",
-  "err1063": "Tarea no eliminada"
+  "err1063": "Tarea no eliminada",
+
+  "errorApiModalTitle" : "Error de conexión",
+  "errorApiModalText" : "No se ha podido conectar con la base de datos. Compruebe su conexión a internet e inténtelo de nuevo mas tarde "
 
 }

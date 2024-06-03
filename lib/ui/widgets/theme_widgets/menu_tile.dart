@@ -28,7 +28,7 @@ class MenuTile extends StatelessWidget {
           text,
           style: appConfig.theme.title
       ),
-      onTap: event, // Aquí simplemente pasamos la función event sin llamarla
+      onTap: event,
     );
   }
 }

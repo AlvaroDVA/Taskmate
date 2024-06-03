@@ -8,6 +8,8 @@ import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/screens_state.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
+import 'package:taskmate_app/ui/widgets/main_menu.dart';
+import 'package:taskmate_app/ui/widgets/theme_widgets/simple_appbar.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -19,7 +21,6 @@ class CalendarScreenState extends State<CalendarScreen>{
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  Map<DateTime, List<String>> _events = {};
 
   TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
   ScreenState screenState = ServiceLocator.screenState;
@@ -34,14 +35,9 @@ class CalendarScreenState extends State<CalendarScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MainMenu(),
       backgroundColor: appConfig.theme.primaryColor,
-      appBar: AppBar(
-        title: Text(
-            AppLocalizations.of(context)!.calendarPageTitle,
-          style: appConfig.theme.title,
-        ),
-        backgroundColor: appConfig.theme.primaryColor,
-      ),
+      appBar: SimpleAppbar(text: AppLocalizations.of(context)!.calendarPageTitle),
       body: Center(
         child: Column(
           children: [
@@ -59,11 +55,11 @@ class CalendarScreenState extends State<CalendarScreen>{
                 titleCentered: true,
                 leftChevronIcon: Icon(
                   Icons.chevron_left,
-                  color: Colors.white, // Change the color of the left chevron here
+                  color: Colors.white,
                 ),
                 rightChevronIcon: Icon(
                   Icons.chevron_right,
-                  color: Colors.white, // Change the color of the right chevron here
+                  color: Colors.white,
                 ),
               ),
               availableCalendarFormats: const {

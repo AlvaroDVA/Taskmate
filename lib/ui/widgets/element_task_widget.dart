@@ -26,9 +26,7 @@ class ElementTaskWidget extends StatefulWidget {
 
   ElementTaskWidget({super.key,
     required this.elementTask,
-    required this.deleteSelf,}) {
-    print(elementTask.runtimeType);
-  }
+    required this.deleteSelf,});
 
   @override
   State<StatefulWidget> createState() => generateElementWidgetState();
@@ -247,7 +245,7 @@ class _VideoElementState extends State<ElementTaskWidget> {
           )
               : Center(
             child: Text(
-              "Select a video",
+              AppLocalizations.of(context)!.videoSelectorText,
               style: TextStyle(color: Colors.black54),
             ),
           ),
@@ -260,8 +258,8 @@ class _VideoElementState extends State<ElementTaskWidget> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Delete Video"),
-        content: Text("Are you sure you want to delete this video?"),
+        title: Text(AppLocalizations.of(context)!.deleteVideoTitle),
+        content: Text(AppLocalizations.of(context)!.deleteVideoContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),

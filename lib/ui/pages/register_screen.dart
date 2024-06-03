@@ -15,6 +15,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../states/auth_state.dart';
 import '../../utils/utils.dart';
+import '../widgets/api_error_modal_widget.dart';
 import '../widgets/forms_widgets/error_box.dart';
 import '../widgets/forms_widgets/form_submit_button.dart';
 import '../widgets/forms_widgets/link_form.dart';
@@ -35,6 +36,8 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
   final UserController userController = ServiceLocator.userController;
   final AppConfig appConfig = ServiceLocator.appConfig;
   final authState = ServiceLocator.authState;
+
+  bool _isLoading = false;
 
 
   @override
@@ -74,58 +77,95 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
       ),
       backgroundColor: appConfig.theme.backgroundLoginColor,
       body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextBlockForm(
-                  textEditingController: usernameController,
-                  text: AppLocalizations.of(context)!.username,
-                  isHiddenText: false
-              ),
-              TextBlockForm(
-                  textEditingController: emailController,
-                  text: AppLocalizations.of(context)!.email,
-                  isHiddenText: false
-              ),
-              TextBlockForm(textEditingController: passwordController,
-                  text: AppLocalizations.of(context)!.password,
-                  isHiddenText: true
-              ),
-              TextBlockForm(textEditingController: repeatPasswordController,
-                  text: AppLocalizations.of(context)!.repeatPassword,
-                  isHiddenText: true
-              ),
-              const ErrorBox(),
-              Padding(
-                padding: EdgeInsets.all(paddingValue),
-                child: FormSubmitButton(
-                  onPressed: () async{
-                    submitRegister(context);
+        child: Consumer<AuthState>(
+          builder: (BuildContext context, AuthState value, Widget? child) {
+            if (authState.apiError) {
+              Future.delayed(Duration.zero, () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ApiErrorModal();
                   },
-                  textButton: AppLocalizations.of(context)!.registerText,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(paddingValue),
-                child: LinkForm(
-                  textNotLink : AppLocalizations.of(context)!.loginUserTextNotLink,
-                  textLink:  AppLocalizations.of(context)!.loginUserLink,
-                  onTap: () {
-                    authState.setErrorMessage(null);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                ),
-              )
-            ],
-          )
+                );
+              });
+            }
+
+            return _isLoading
+                ? CircularProgressIndicator(color : appConfig.theme.iconColor)
+                : _registerForm(context, paddingValue);
+          },
+        ),
       ),
     );
   }
 
-  void submitRegister(BuildContext context) {
+  Widget _registerForm(BuildContext context, double paddingValue) {
+    return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextBlockForm(
+                textEditingController: usernameController,
+                text: AppLocalizations.of(context)!.username,
+                isHiddenText: false
+            ),
+            TextBlockForm(
+                textEditingController: emailController,
+                text: AppLocalizations.of(context)!.email,
+                isHiddenText: false
+            ),
+            TextBlockForm(textEditingController: passwordController,
+                text: AppLocalizations.of(context)!.password,
+                isHiddenText: true
+            ),
+            TextBlockForm(textEditingController: repeatPasswordController,
+                text: AppLocalizations.of(context)!.repeatPassword,
+                isHiddenText: true
+            ),
+            const ErrorBox(),
+            Padding(
+              padding: EdgeInsets.all(paddingValue),
+              child: FormSubmitButton(
+                onPressed: () async {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  try {
+                    await registerForm(context, authState);
+                  } catch (e) {
+                    print("Error submitting register: $e");
+                    authState.setApiError(true); // Establecer error de API en true
+                  } finally {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  }await submitRegister(context);
+                  setState(() {
+                    _isLoading = false;
+                  });
+                },
+                textButton: AppLocalizations.of(context)!.registerText,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(paddingValue),
+              child: LinkForm(
+                textNotLink : AppLocalizations.of(context)!.loginUserTextNotLink,
+                textLink:  AppLocalizations.of(context)!.loginUserLink,
+                onTap: () {
+                  authState.setErrorMessage(null);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+              ),
+            )
+          ],
+        );
+  }
+
+  Future<void> submitRegister(BuildContext context) async {
+
     String username = usernameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text;
@@ -156,7 +196,7 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
       return;
     }
 
-    registerForm(context, authState);
+    await registerForm(context, authState);
   }
 
   bool isEmailValid(String email) {
@@ -181,7 +221,7 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
     return username.isEmpty || email.isEmpty || password.isEmpty || repeatPassword.isEmpty;
   }
 
-  void registerForm(BuildContext context, AuthState authState) async {
+  Future<void> registerForm(BuildContext context, AuthState authState) async {
     if (passwordController.text != repeatPasswordController.text) {
       var errorMessage = Utils.getFormsErrorMessage(
           "1004", context
@@ -198,7 +238,7 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
       if (res['error'] != null) {
         incorrectRegister(res, context, authState);
       } else {
-        correctLogin(authState, res, context);
+        await correctLogin(authState, res, context);
       }
     }
   }
@@ -212,7 +252,7 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
     authState.setErrorMessage(errorMessage);
   }
 
-  void correctLogin(AuthState authState, Map<String, dynamic> res, BuildContext context) async {
+  Future<void> correctLogin(AuthState authState, Map<String, dynamic> res, BuildContext context) async {
     authState.setLogged(true);
     authState.setCurrentUser(
         User(

@@ -11,8 +11,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:taskmate_app/themes/dark_theme.dart';
 import 'package:taskmate_app/themes/light_theme.dart';
 import 'package:taskmate_app/themes/theme.dart';
+import 'package:taskmate_app/ui/widgets/main_menu.dart';
 import '../../enums/lenguages.dart';
 import '../widgets/theme_widgets/settings_card.dart';
+import '../widgets/theme_widgets/simple_appbar.dart';
 import '../widgets/theme_widgets/standard_dialog_widget.dart';
 import 'login_screen.dart';
 
@@ -32,14 +34,9 @@ class SettingScreenState extends State<SettingsScreeen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MainMenu(),
       backgroundColor: appConfig.theme.primaryColor,
-      appBar: AppBar(
-        backgroundColor: appConfig.theme.primaryColor,
-        title: Text(
-          AppLocalizations.of(context)!.settingsPageTitle,
-          style: appConfig.theme.title,
-        ),
-      ),
+      appBar: SimpleAppbar(text : AppLocalizations.of(context)!.settingsPageTitle),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -249,3 +246,4 @@ class SettingScreenState extends State<SettingsScreeen> {
   }
 
 }
+

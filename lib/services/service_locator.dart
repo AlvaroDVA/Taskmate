@@ -12,6 +12,7 @@ import 'package:taskmate_app/states/screens_state.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 
 import '../states/auth_state.dart';
+import '../states/notebook_state.dart';
 
 class ServiceLocator {
   static final UserController _userController = UserController();
@@ -24,6 +25,7 @@ class ServiceLocator {
   static ScreenState _screenState = ScreenState();
   static TasksLoadedState _tasksLoadedState = TasksLoadedState();
   static AuthState _authState = AuthState();
+  static NotebookState _notebookState = NotebookState();
 
   static UserController get userController => _userController;
   static UserService get userService => _userService;
@@ -35,5 +37,6 @@ class ServiceLocator {
   static ScreenState get screenState => _screenState;
   static TasksLoadedState get taskLoadedState => _tasksLoadedState;
   static AuthState get authState => _authState;
+  static NotebookState get notebookState => _notebookState;
 
 }

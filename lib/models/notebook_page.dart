@@ -1,11 +1,10 @@
-abstract class Page {
+class NotebookPage {
   int pageNumber;
-  String title;
+  String? title;
   String text;
 
-  Page({
+  NotebookPage({
     required this.pageNumber,
-    required this.title,
     required this.text
   });
 

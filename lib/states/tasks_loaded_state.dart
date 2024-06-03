@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:taskmate_app/controllers/day_controller.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/auth_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../models/day.dart';
 

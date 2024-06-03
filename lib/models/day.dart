@@ -18,14 +18,11 @@ class Day {
 
   factory Day.fromJson(Map<String, dynamic> json) {
     List<Task> tasks = [];
-    print("aaaaaaaaaaaaaaa ${json['tasks']}");
     if (json['tasks'] != null) {
       json['tasks'].forEach((elementJson) {
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         tasks.add(Task.fromJson(elementJson));
       });
     }
-    print("Tasks : $tasks");
     return Day(
       date: DateTime.parse(json['date']),
       todayTasks: tasks,
@@ -37,7 +34,6 @@ class Day {
 
     List<Map<String, dynamic>> elements = [];
     for (var task in item.todayTasks) {
-      print("aaaaaaaaaaaaaaa $item");
       elements.add(task.toJson());
     }
 

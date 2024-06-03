@@ -20,6 +20,7 @@ class ScreenState extends ChangeNotifier {
   DayTaskScreen get dayTaskScreen => _dayTaskScreen;
   SettingsScreeen get settingScreen => _settingsScreen;
   CalendarScreen get calendarScreen => _calendarScreen;
+  NotebookScreen get notebookScreen => _notebookScreen;
 
   Widget get actualScreen {
     return _actualScreen ?? _dayTaskScreen;
@@ -35,13 +36,6 @@ class ScreenState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> clearScreen() async {
-    _dayTaskScreen = DayTaskScreen();
-    _settingsScreen = SettingsScreeen();
-    _actualScreen = _dayTaskScreen;
-    notifyListeners();
-  }
-
   Future<void> setCalendarScreen() async {
     _actualScreen = _calendarScreen;
     notifyListeners();
@@ -49,6 +43,13 @@ class ScreenState extends ChangeNotifier {
 
   Future<void> setNotebookScreen() async {
     _actualScreen = _notebookScreen;
+    notifyListeners();
+  }
+
+  Future<void> clearScreen() async {
+    _dayTaskScreen = DayTaskScreen();
+    _settingsScreen = SettingsScreeen();
+    _actualScreen = _dayTaskScreen;
     notifyListeners();
   }
 

@@ -26,6 +26,7 @@ android {
     namespace "dev.alvarodva.taskmate_app"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+    compileSdkVersion 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -58,6 +59,8 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+
 }
 
 flutter {

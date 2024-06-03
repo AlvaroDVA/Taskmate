@@ -12,9 +12,12 @@ class AuthState extends ChangeNotifier {
   User? _currentUser;
   bool _isLogged = false;
 
+  bool _apiError = false;
+
   String? get errorMessage => _errorMessage;
   User? get currentUser => _currentUser;
   bool get isLogged => _isLogged;
+  bool get apiError => _apiError;
 
   AuthState() {
     _initialize();
@@ -74,6 +77,11 @@ class AuthState extends ChangeNotifier {
 
   void setLogged(bool value) {
     _isLogged = value;
+    notifyListeners();
+  }
+
+  void setApiError(bool value) {
+    _apiError = value;
     notifyListeners();
   }
 

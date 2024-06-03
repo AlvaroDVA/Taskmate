@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/ui/widgets/theme_widgets/day_changer_icon_widget.dart';
@@ -8,7 +10,9 @@ import '../../states/tasks_loaded_state.dart';
 
 class DayChanger extends StatelessWidget implements PreferredSizeWidget {
   final AppConfig appConfig = ServiceLocator.appConfig;
-  TasksLoadedState taskLoadedState = ServiceLocator.taskLoadedState;
+  final TasksLoadedState taskLoadedState = ServiceLocator.taskLoadedState;
+
+  DayChanger({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +79,7 @@ class DayChanger extends StatelessWidget implements PreferredSizeWidget {
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         )
@@ -84,7 +88,13 @@ class DayChanger extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight * 1.45);
+  Size get preferredSize {
+    if (Platform.isAndroid) {
+      return Size.fromHeight(kToolbarHeight * 1.58);
+    } else {
+      return Size.fromHeight(kToolbarHeight * 1.43);
+    }
+  }
 
 }
 

@@ -4,15 +4,16 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:properties/properties.dart';
 import 'package:taskmate_app/enums/app_theme.dart';
 import 'package:taskmate_app/enums/lenguages.dart';
 import 'package:taskmate_app/themes/theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class AppConfig extends ChangeNotifier{
 
-   String rutaArchivo = '${Directory.current.path}\\assets\\config.properties';
+   late String rutaArchivo;
    late Properties properties;
 
    late CustomTheme theme;
@@ -26,24 +27,52 @@ class AppConfig extends ChangeNotifier{
 
 
   AppConfig() {
-    loadProperties();
+
+    initialize();
   }
 
+  Future<void> initialize() async {
+    if (Platform.isWindows) {
+      rutaArchivo = '${Directory.current.path}\\assets\\config.properties';
+    } else if (Platform.isAndroid) {
+      final directory = await getApplicationDocumentsDirectory();
+      rutaArchivo = '${directory.path}/config.properties';
+    }
+
+    await loadProperties();
+    print(locale.languageCode);
+  }
+
+
    Future<void> loadProperties() async {
-     properties = Properties.fromFile(rutaArchivo);
+    File file = File(rutaArchivo);
+    if (!file.existsSync()) {
+      final defaultProperties = '''
+        theme=light
+        language=english
+        actualUser=None
+        urlApi = http://taskmate.ddns.net:15556
+        ''';
+      await file.writeAsString(defaultProperties);
+    }
+
+
+
+    properties = Properties.fromFile(rutaArchivo);
+
 
      language = properties.get('language') ?? "English";
+     await _loadLocale(language);
      theme = CustomTheme.fromProperties(properties.get('theme') ?? "light");
      urlApi = properties.get('urlApi') ?? "http://taskmate.ddns.net:15556";
 
-     await _loadLocale(language);
-
      localDataUrl = _getLocalDataUrl();
+
      notifyListeners();
    }
 
    Future<void> _loadLocale(String language) async {
-     switch (language) {
+     switch (language.toLowerCase()) {
        case "english":
          _locale = Locale('en');
          break;

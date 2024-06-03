@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
@@ -8,6 +11,7 @@ import 'package:taskmate_app/rest/user_api_rest.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/services/user_service.dart';
 import 'package:taskmate_app/states/auth_state.dart';
+import 'package:taskmate_app/states/notebook_state.dart';
 import 'package:taskmate_app/states/screens_state.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:taskmate_app/ui/pages/day_task_screen.dart';
@@ -20,21 +24,23 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize window manager.
-  await windowManager.ensureInitialized();
+  if (Platform.isWindows) {
+    await windowManager.ensureInitialized();
 
-  // Set window options.
-  WindowOptions windowOptions = WindowOptions(
-    size: Size(1000, 700),
-    center: true,
-    skipTaskbar: false,
-    title: 'Flutter Window Manager',
-    titleBarStyle: TitleBarStyle.normal,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(1000, 700),
+      center: true,
+      skipTaskbar: false,
+      title: 'Flutter Window Manager',
+      titleBarStyle: TitleBarStyle.normal,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  } else if (Platform.isAndroid) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
 
   runApp(MyApp());
 }
@@ -46,6 +52,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AppConfig>(
           create: (_) => ServiceLocator.appConfig,
+        ),
+        ChangeNotifierProvider<NotebookState>(
+          create: (_) => ServiceLocator.notebookState,
         ),
         Provider<UserController>(
           create: (_) => ServiceLocator.userController,
@@ -94,12 +103,10 @@ class MyApp extends StatelessWidget {
                   future: authState.checkIsLogged(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Mientras se está verificando el estado de inicio de sesión, muestra un indicador de carga
                       return Scaffold(
                         body: Center(child: CircularProgressIndicator()),
                       );
                     } else {
-                      // Cuando la verificación esté completa, muestra la pantalla correspondiente
                       return authState.isLogged ? const HomePage() : LoginScreen();
                     }
                   },

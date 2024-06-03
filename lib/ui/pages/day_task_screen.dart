@@ -1,29 +1,20 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/controllers/day_controller.dart';
 import 'package:taskmate_app/enums/color_task.dart';
-import 'package:taskmate_app/models/day.dart';
-import 'package:taskmate_app/models/elementTasks/element_task.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/states/tasks_loaded_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:taskmate_app/ui/widgets/theme_widgets/exit_dialog_widget.dart';
 import 'package:taskmate_app/ui/widgets/theme_widgets/standard_dialog_widget.dart';
 import '../widgets/main_menu.dart';
 import 'package:taskmate_app/ui/widgets/task_widget.dart';
-import 'package:uuid/uuid.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../models/task.dart';
 import '../../states/auth_state.dart';
 import '../widgets/day_changer.dart';
-import 'login_screen.dart';
 
 class DayTaskScreen extends StatefulWidget {
 
@@ -91,12 +82,21 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
             padding: EdgeInsets.only(bottom: 50),
             child: Consumer<TasksLoadedState>(
               builder: (BuildContext context, TasksLoadedState tasksLoadedState, Widget? child) {
-                if (tasksLoadedState.isLoaded) {
-                  return Center(
+                  if (tasksLoadedState.isLoaded) {
+                  return NestedScrollView(
+                      controller: _scrollController,
+                      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                        return <Widget>[
+                          SliverOverlapAbsorber(
+                            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                          ),
+                        ];
+                      },
+                  body: Center(
                       child : ListView.separated(
                         controller: _scrollController,
                           itemCount: tasksLoadedState.currentDay.todayTasks.length,
-                          separatorBuilder: (_, index) => Spacer(),
+                          separatorBuilder: (_, index) => SizedBox(height: 10,),
                           itemBuilder: (_, index) {
                             return TaskWidget(
                                 actualTask: tasksLoadedState.currentDay.todayTasks[index],
@@ -108,6 +108,7 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
                             );
                           }
                       )
+                    )
                   );
                 } else {
                   return const Center(

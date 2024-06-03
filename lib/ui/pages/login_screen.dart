@@ -15,6 +15,7 @@ import '../../config/app_config.dart';
 import '../../models/user.dart';
 import '../../states/auth_state.dart';
 import '../../utils/utils.dart';
+import '../widgets/api_error_modal_widget.dart';
 import '../widgets/forms_widgets/error_box.dart';
 import '../widgets/forms_widgets/form_submit_button.dart';
 import '../widgets/forms_widgets/link_form.dart';
@@ -33,6 +34,8 @@ class LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver, W
   AppConfig appConfig = ServiceLocator.appConfig;
   AuthState authState = ServiceLocator.authState;
   TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -70,47 +73,76 @@ class LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver, W
         backgroundColor: appConfig.theme.backgroundLoginColor,
       ),
       backgroundColor: appConfig.theme.backgroundLoginColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextBlockForm(
-                textEditingController: usernameController,
-                text : AppLocalizations.of(context)!.username ,
-                isHiddenText: false
-            ),
-            TextBlockForm(
-                textEditingController: passwordController,
-                text : AppLocalizations.of(context)!.password,
-                isHiddenText: true
-            ),
-            const ErrorBox(),
-            Padding(
-              padding: EdgeInsets.all(paddingValue),
-              child: FormSubmitButton(
-                  onPressed: () async {
-                    await submitLogin(context);
-                  },
-                  textButton: AppLocalizations.of(context)!.loginText),
-            ),
-            Padding(
-              padding: EdgeInsets.all(paddingValue),
-              child: LinkForm(
-                textNotLink : AppLocalizations.of(context)!.notAccount,
-                textLink:  AppLocalizations.of(context)!.registerUserLink,
-                onTap: () {
-                  authState.setErrorMessage(null);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()),
+      body: Padding(
+        padding: EdgeInsets.all(paddingValue),
+        child: Center(
+          child: Consumer<AuthState>(
+            builder: (BuildContext context, AuthState value, Widget? child) {
+              if (authState.apiError) {
+                Future.delayed(Duration.zero, () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ApiErrorModal();
+                    },
                   );
-                },
-              ),
-            )
-          ],
+                });
+              }
+              return _isLoading
+                  ? CircularProgressIndicator(color : appConfig.theme.iconColor)
+                  : _loginForm(context, paddingValue);
+            },
+          ),
         ),
       ),
     );
+  }
+
+  Widget _loginForm(BuildContext context, double paddingValue) {
+    return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextBlockForm(
+                    textEditingController: usernameController,
+                    text : AppLocalizations.of(context)!.username ,
+                    isHiddenText: false
+                ),
+                TextBlockForm(
+                    textEditingController: passwordController,
+                    text : AppLocalizations.of(context)!.password,
+                    isHiddenText: true
+                ),
+                const ErrorBox(),
+                Padding(
+                  padding: EdgeInsets.all(paddingValue),
+                  child: FormSubmitButton(
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await submitLogin(context);
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      textButton: AppLocalizations.of(context)!.loginText),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(paddingValue),
+                  child: LinkForm(
+                    textNotLink : AppLocalizations.of(context)!.notAccount,
+                    textLink:  AppLocalizations.of(context)!.registerUserLink,
+                    onTap: () {
+                      authState.setErrorMessage(null);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterScreen()),
+                      );
+                    },
+                  ),
+                )
+              ],
+            );
   }
 
   Future<void> submitLogin(BuildContext context) async {
@@ -163,6 +195,8 @@ class LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver, W
     ) ?? false;
   }
 }
+
+
 
 
 

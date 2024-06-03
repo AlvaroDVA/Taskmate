@@ -118,6 +118,7 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
                         setState(() {
                           task.isChecked = !task.isChecked;
                           tasksLoadedState.saveCurrentTask();
+
                         }
                         );
                       },
