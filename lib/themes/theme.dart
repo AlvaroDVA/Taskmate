@@ -55,6 +55,8 @@ abstract class CustomTheme {
   late TextStyle todayTextStyle;
   late TextStyle dayWeekTitle;
 
+  late Color notebookBackgroundColor;
+
   factory CustomTheme.fromProperties(String theme) {
     if (theme == "light") {
       return LightTheme();

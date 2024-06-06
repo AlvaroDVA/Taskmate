@@ -50,6 +50,12 @@
   "calendarPageTitle" : "Calendario",
   "notebookScreenTitle" : "Cuaderno",
   "okButton" : "Aceptar",
+  "notificationsText" : "Notificaciones",
+  "notificationModalText" : "Elige la hora",
+  "minuteText" : "Minuto",
+  "hourText" : "Hora",
+  "notebookPageText" : "Página",
+  "writeHereHint" : "Escriba aqui",
 
   "err1001": "La ID de este usuario ya existe",
   "err1002": "Ya existe un usuario con este email",
@@ -70,6 +76,9 @@
   "err1063": "Tarea no eliminada",
 
   "errorApiModalTitle" : "Error de conexión",
-  "errorApiModalText" : "No se ha podido conectar con la base de datos. Compruebe su conexión a internet e inténtelo de nuevo mas tarde "
+  "errorApiModalText" : "No se ha podido conectar con la base de datos. Compruebe su conexión a internet e inténtelo de nuevo mas tarde ",
+
+  "notificationHead" : "Hora de Organizarse",
+  "notificationBody" : "Recuerda revisar tus tareas para hoy"
 
 }

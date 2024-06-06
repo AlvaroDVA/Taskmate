@@ -13,6 +13,7 @@ import 'package:taskmate_app/themes/light_theme.dart';
 import 'package:taskmate_app/themes/theme.dart';
 import 'package:taskmate_app/ui/widgets/main_menu.dart';
 import '../../enums/lenguages.dart';
+import '../../services/notification_service.dart';
 import '../widgets/theme_widgets/settings_card.dart';
 import '../widgets/theme_widgets/simple_appbar.dart';
 import '../widgets/theme_widgets/standard_dialog_widget.dart';
@@ -21,15 +22,17 @@ import 'login_screen.dart';
 class SettingsScreeen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SettingScreenState();
-
-
-
-
 }
 
 class SettingScreenState extends State<SettingsScreeen> {
   AuthState authState = ServiceLocator.authState;
   AppConfig appConfig = ServiceLocator.appConfig;
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationService.init();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +94,14 @@ class SettingScreenState extends State<SettingsScreeen> {
                         });
                       },
                     ),
+                    if (Platform.isAndroid)
+                      SettingsCard(
+                        leadingIcon: Icons.notifications,
+                        title: AppLocalizations.of(context)!.notificationsText,
+                        onTap: () {
+                          _showNotificationsModal(context);
+                        },
+                      ),
                     SettingsCard(
                       leadingIcon: Icons.delete,
                       title: AppLocalizations.of(context)!.deleteUserText,
@@ -100,6 +111,7 @@ class SettingScreenState extends State<SettingsScreeen> {
                         });
                       },
                     ),
+
                   ],
                 );
               },
@@ -243,6 +255,108 @@ class SettingScreenState extends State<SettingsScreeen> {
         await authState.changeAvatar(result.files.single.path);
       });
     }
+  }
+
+  void _showNotificationsModal(BuildContext context) {
+    int selectedHour = TimeOfDay.now().hour;
+    int selectedMinute = TimeOfDay.now().minute;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: appConfig.theme.modalBackgroundColor,
+              title: Text(
+                AppLocalizations.of(context)!.notificationModalText,
+                style: appConfig.theme.title,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.hourText,
+                            style: appConfig.theme.title,
+                          ),
+                          DropdownButton<int>(
+                            dropdownColor: appConfig.theme.modalBackgroundColor,
+                            value: selectedHour,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedHour = value!;
+                              });
+                            },
+                            items: List.generate(24, (index) {
+                              return DropdownMenuItem<int>(
+                                value: index,
+                                child: Text(
+                                  index.toString().padLeft(2, '0'),
+                                  style: appConfig.theme.text,
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.minuteText,
+                            style: appConfig.theme.title,
+                          ),
+                          DropdownButton<int>(
+                            dropdownColor: appConfig.theme.modalBackgroundColor,
+                            value: selectedMinute,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMinute = value!;
+                              });
+                            },
+                            items: List.generate(60, (index) {
+                              return DropdownMenuItem<int>(
+                                value: index,
+                                child: Text(
+                                  index.toString().padLeft(2, '0'),
+                                  style: appConfig.theme.text,
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(AppLocalizations.of(context)!.cancelButton
+                  ),
+                    style: appConfig.theme.modalButtonText
+                ),
+                TextButton(
+                  onPressed: () {
+                    NotificationService.showScheduledNotification(context, selectedHour, selectedMinute);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(AppLocalizations.of(context)!.okButton),
+                    style: appConfig.theme.modalButtonText
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
 }

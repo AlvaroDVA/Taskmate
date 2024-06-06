@@ -226,4 +226,7 @@ class DarkTheme implements CustomTheme {
       fontSize: 16,
       height: 1.2
   );
+
+  @override
+  Color notebookBackgroundColor = const Color(0xff121212);
 }

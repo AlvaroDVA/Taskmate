@@ -6,8 +6,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/controllers/day_controller.dart';
+import 'package:taskmate_app/controllers/notebook_controller.dart';
 import 'package:taskmate_app/controllers/user_controller.dart';
+import 'package:taskmate_app/rest/notebook_api_rest.dart';
 import 'package:taskmate_app/rest/user_api_rest.dart';
+import 'package:taskmate_app/services/notebook_service.dart';
+import 'package:taskmate_app/services/notification_service.dart';
 import 'package:taskmate_app/services/service_locator.dart';
 import 'package:taskmate_app/services/user_service.dart';
 import 'package:taskmate_app/states/auth_state.dart';
@@ -18,11 +22,14 @@ import 'package:taskmate_app/ui/pages/day_task_screen.dart';
 import 'package:taskmate_app/ui/pages/home_page.dart';
 import 'package:taskmate_app/ui/pages/login_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:timezone/data/latest.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+  initializeTimeZones();
+  await NotificationService.init();
 
   if (Platform.isWindows) {
     await windowManager.ensureInitialized();
@@ -62,11 +69,20 @@ class MyApp extends StatelessWidget {
         Provider<UserService>(
           create: (_) => ServiceLocator.userService,
         ),
+        Provider<NotebookService>(
+          create: (_) => ServiceLocator.notebookService,
+        ),
         Provider<UserApiRest>(
           create: (_) => ServiceLocator.userApiRest,
         ),
+        Provider<NotebookApiRest>(
+          create : (_) => ServiceLocator.notebookApiRest
+        ),
         Provider<DayController>(
           create: (_) => ServiceLocator.dayController,
+        ),
+        Provider<NotebookController>(
+          create: (_) => ServiceLocator.notebookController,
         ),
         ChangeNotifierProvider<AuthState>(
           create: (_) => ServiceLocator.authState,
@@ -118,6 +134,8 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 

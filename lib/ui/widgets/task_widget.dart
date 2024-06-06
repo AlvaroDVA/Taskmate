@@ -15,6 +15,8 @@ import 'package:taskmate_app/ui/widgets/element_task_widget.dart';
 import 'package:taskmate_app/ui/widgets/theme_widgets/custom_checkbox_widget.dart';
 import 'package:uuid/uuid.dart';
 
+import 'elements_widgets/element_add_button_widget.dart';
+
 class TaskWidget extends StatefulWidget{
 
   Task actualTask;
@@ -107,6 +109,7 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
                     ),
                     onEditingComplete: () {
                       task.title = textEditingController.text;
+                      tasksLoadedState.saveCurrentTask();
                     },
                   ),
                 ),
@@ -118,7 +121,6 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
                         setState(() {
                           task.isChecked = !task.isChecked;
                           tasksLoadedState.saveCurrentTask();
-
                         }
                         );
                       },
@@ -145,141 +147,82 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
           ),
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(padding),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: appConfig.theme.lightColor2,
-                      border: Border.all(
-                        color: appConfig.theme.darkAuxColor,
-                        width: 2.0,
-                      )
-                  ),
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          widget.onDelete();
-                        });
-                      },
-                      icon: Icon(Icons.delete)
-                  ),
-                ),
-              ),
+              ElementAddButtonWidget(
+                  task: task,
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    setState(() {
+                      setState(() {
+                        widget.onDelete();
+                      });
+                  });
+              }),
               Spacer(),
               // TextElement
-              Padding(
-                padding: const EdgeInsets.all(padding),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: appConfig.theme.lightColor2,
-                    border: Border.all(
-                      color: appConfig.theme.darkAuxColor,
-                      width: 2.0,
-                    )
-                  ),
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          widget.actualTask.elementList.add(
-                              TextElement(
-                                elementId: uuid.v1(),
-                                taskOrder: task.elementList.length,
-                                text: ""
-                              )
-                          );
-                        });
-                      },
-                      icon: Icon(Icons.text_fields)
-                  ),
-                ),
-              ),
+              ElementAddButtonWidget(
+                  task: task,
+                  icon: Icon(Icons.text_fields),
+                  onPressed: () {
+                    setState(() {
+                      widget.actualTask.elementList.add(
+                          TextElement(
+                              elementId: uuid.v1(),
+                              taskOrder: task.elementList.length,
+                              text: ""
+                          )
+                      );
+                    });
+                  }),
               // ImageElement
-              Padding(
-                padding: const EdgeInsets.all(padding),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: appConfig.theme.lightColor2,
-                      border: Border.all(
-                        color: appConfig.theme.darkAuxColor,
-                        width: 2.0,
-                      )
-                  ),
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          task.elementList.add(
-                              ImageElement(
-                                  elementId: uuid.v1(),
-                                  taskOrder: task.elementList.length,
-                                  image: null)
-                          );
-                        });
-                      },
-                      icon: Icon(Icons.image)
-                  ),
-                ),
-              ),
+              ElementAddButtonWidget(
+                  task: task,
+                  icon: Icon(Icons.image),
+                  onPressed: () {
+                    setState(() {
+                      task.elementList.add(
+                          ImageElement(
+                              elementId: uuid.v1(),
+                              taskOrder: task.elementList.length,
+                              image: null)
+                      );
+                    });
+                  }),
               /*
-              // VideoElement
-              Padding(
-                padding: const EdgeInsets.all(padding),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: appConfig.theme.lightColor2,
-                      border: Border.all(
-                        color: appConfig.theme.darkAuxColor,
-                        width: 2.0,
-                      )
-                  ),
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          task.elementList.add(
-                            VideoElementOwn(
-                                elementId: uuid.v1(),
-                                taskOrder: task.elementList.length,
-                                video: null
-                            )
-                          );
-                        });
-                      },
-                      icon: Icon(Icons.movie)
-                  ),
-                ),
-              )
-             */
-              Padding(
-                padding: const EdgeInsets.all(padding),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: appConfig.theme.lightColor2,
-                      border: Border.all(
-                        color: appConfig.theme.darkAuxColor,
-                        width: 2.0,
-                      )
-                  ),
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          task.elementList.add(
-                              SublistElement(
-                                  elementId: uuid.v1(),
-                                  taskOrder: task.elementList.length,
-                                  title: "",
-                                  sublist: List<Sublist>.empty(growable: true)
-                              )
-                          );
-                          if (task.elementList.last is SublistElement) {
-                            var taskS = task.elementList.last as SublistElement;
-                            taskS.sublist.add(Sublist(text: "", isChecked: false));
-                          }
-                        });
-                      },
-                      icon: Icon(Icons.list)
-                  ),
-                ),
+              ElementAddButtonWidget(
+                  task: task,
+                  icon: Icon(Icons.movie),
+                  onPressed: () {
+                    setState(() {
+                      task.elementList.add(
+                          VideoElementOwn(
+                              elementId: uuid.v1(),
+                              taskOrder: task.elementList.length,
+                              video: null
+                          )
+                      );
+                    });
+                  }),
+               */
+              ElementAddButtonWidget(
+                task: task,
+                icon : Icon(Icons.list),
+                onPressed: () {
+                  setState(() {
+                    task.elementList.add(
+                        SublistElement(
+                            elementId: uuid.v1(),
+                            taskOrder: task.elementList.length,
+                            title: "",
+                            sublist: List<Sublist>.empty(growable: true)
+                        )
+                    );
+                    if (task.elementList.last is SublistElement) {
+                      var taskS = task.elementList.last as SublistElement;
+                      taskS.sublist.add(Sublist(text: "", isChecked: false));
+                    }
+                  });
+                },
               ),
-
             ],
           )
 
@@ -287,4 +230,9 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
       ),
     );
   }
+
+
 }
+
+
+

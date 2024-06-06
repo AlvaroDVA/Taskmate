@@ -20,61 +20,70 @@ class NotebookScreen extends StatefulWidget{
 
 }
 class NotebookScreenState extends State<NotebookScreen> {
+  AppConfig appconfig = ServiceLocator.appConfig;
+  NotebookState notebookState = ServiceLocator.notebookState;
+  @override
+  void initState() {
+    super.initState();
+    notebookState.initNotebook();
+  }
 
-  AppConfig appconfig =  ServiceLocator.appConfig;
+  @override
+  void dispose() {
+    notebookState.saveNotebook();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: appconfig.theme.primaryColor,
-      drawer: MainMenu(),
-      appBar: NotebookBarWidget(),
-      body: Consumer<NotebookState>(
-        builder: (context, notebookState, child) {
-          return GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity != null) {
-                if (details.primaryVelocity! < 0) {
-                  setState(() {
+    return Consumer<NotebookState>(
+      builder: (context, notebookState, child) {
+        if (notebookState.pages.isEmpty) {
+          return Scaffold(
+            backgroundColor: appconfig.theme.notebookBackgroundColor,
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: appconfig.theme.notebookBackgroundColor,
+            drawer: MainMenu(),
+            appBar: NotebookBarWidget(),
+            body: GestureDetector(
+              onHorizontalDragEnd: (details) {
+                if (details.primaryVelocity != null) {
+                  if (details.primaryVelocity! < 0) {
                     notebookState.nextPage();
-                  });
-
-                } else if (details.primaryVelocity! > 0) {
-                  setState(() {
+                  } else if (details.primaryVelocity! > 0) {
                     notebookState.previousPage();
-                  });
+                  }
                 }
-              }
-            },
-            child: Stack(
-              children: [
-                PageView.builder(
-                  itemCount: notebookState.pages.length,
-                  controller: PageController(initialPage: notebookState.currentPageIndex),
-                  onPageChanged: (index) {
-                    setState(() {
+              },
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    itemCount: notebookState.pages.length,
+                    controller: PageController(initialPage: notebookState.currentPageIndex),
+                    onPageChanged: (index) {
                       notebookState.goToPage(index);
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return PageNotebookWidget();
-                  },
-                ),
-                if (notebookState.currentPageIndex > 0)
-                  Positioned(
-                    left: 16.0,
-                    top: MediaQuery.of(context).size.height / 2 - 24,
-                    child: IconButton(
-                      color: appconfig.theme.auxColor,
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        setState(() {
-                          notebookState.previousPage();
-                        });
-                      },
-                    ),
+                    },
+                    itemBuilder: (context, index) {
+                      return PageNotebookWidget();
+                    },
                   ),
-                if (notebookState.currentPageIndex < notebookState.pages.length - 1)
+                  if (notebookState.currentPageIndex > 0)
+                    Positioned(
+                      left: 16.0,
+                      top: MediaQuery.of(context).size.height / 2 - 24,
+                      child: IconButton(
+                        color: appconfig.theme.auxColor,
+                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          notebookState.previousPage();
+                        },
+                      ),
+                    ),
                   Positioned(
                     right: 16.0,
                     top: MediaQuery.of(context).size.height / 2 - 24,
@@ -82,19 +91,19 @@ class NotebookScreenState extends State<NotebookScreen> {
                       color: appconfig.theme.auxColor,
                       icon: Icon(Icons.arrow_forward),
                       onPressed: () {
-                        setState(() {
-                          notebookState.nextPage();
-                        });
+                        notebookState.nextPage();
                       },
                     ),
                   ),
-              ],
+                ],
+              ),
             ),
           );
-        },
-      ),
+        }
+      },
     );
   }
+
 }
 
 

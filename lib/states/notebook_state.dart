@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:taskmate_app/models/user.dart';
 
+import '../controllers/notebook_controller.dart';
 import '../models/notebook_page.dart';
+import '../services/service_locator.dart';
+import 'auth_state.dart';
 
 class NotebookState extends ChangeNotifier {
-  late List<NotebookPage> _pages;
+  List<NotebookPage> _pages = List<NotebookPage>.empty(growable: true);
   int _currentPageIndex = 0;
+
+  NotebookController notebookController = ServiceLocator.notebookController;
+  AuthState authState = ServiceLocator.authState;
 
   NotebookState() {
     initNotebook();
@@ -14,19 +21,24 @@ class NotebookState extends ChangeNotifier {
 
   NotebookPage get currentPage => _pages[_currentPageIndex];
 
-  List<NotebookPage> get pages => List.unmodifiable(_pages);
+  List<NotebookPage> get pages => _pages;
 
-  void nextPage() {
-    if (_currentPageIndex < _pages.length - 1) {
-      _currentPageIndex+=1;
+  void nextPage() async {
+    if (_currentPageIndex == _pages.length - 1) {
+      _pages.add(NotebookPage(pageNumber: _pages.length + 1, text: ""));
     }
+    _currentPageIndex += 1;
+
+    await saveNotebook();
     notifyListeners();
+
   }
 
-  void previousPage() {
+  void previousPage() async{
     if (_currentPageIndex > 0) {
       _currentPageIndex-=1;
     }
+    await saveNotebook();
     notifyListeners();
   }
 
@@ -43,8 +55,15 @@ class NotebookState extends ChangeNotifier {
   }
 
   Future<void> initNotebook() async {
-    _pages = List<NotebookPage>.filled(1, NotebookPage(text: "Texto", pageNumber: 1), growable: true, );
-    _pages.add(NotebookPage(text: "Texto 2", pageNumber: 2));
-    _pages.add(NotebookPage(text: "Texto 3", pageNumber: 3));
+    _pages = await notebookController.getAllPages(authState.currentUser);
+    if (_pages.isEmpty) {
+      _pages.add(NotebookPage(pageNumber: 1, text: ""));
+    }
+    notifyListeners();
+  }
+
+  Future<void> saveNotebook() async {
+    await notebookController.savePages(_pages, authState.currentUser);
   }
 }
+

@@ -19,7 +19,8 @@ class UserApiRest {
       String url = "${appConfig.urlApi}/login";
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Content-Type': 'application/json','username': username, 'password': password},
+        headers: {'Content-Type': 'application/json; charset=UTF-8'
+          ,'username': username, 'password': password},
       );
 
       if (response.statusCode == 200) {
@@ -29,7 +30,7 @@ class UserApiRest {
       }
     } on SocketException {
       authState.setApiError(true);
-      throw Exception('Error al iniciar sesión');
+      return {"" : ""};
     }
   }
 
@@ -50,7 +51,7 @@ class UserApiRest {
 
       final response = await http.post(
         Uri.parse(url),
-        headers : {'Content-Type': 'application/json'},
+        headers : {'Content-Type': 'application/json; charset=UTF-8',},
         body: jsonEncode(data),
       );
 

@@ -50,6 +50,12 @@
   "calendarPageTitle" : "Calendar",
   "notebookScreenTitle" : "Notebook",
   "okButton" : "Ok",
+  "notificationsText" : "Notifications",
+  "notificationModalText" : "Choose a hour",
+  "minuteText" : "Minute",
+  "hourText" : "Hour",
+  "notebookPageText" : "Page",
+  "writeHereHint" : "Write here",
 
   "err1001": "UserID already exists",
   "err1002": "User Email already exists",
@@ -70,6 +76,9 @@
   "err1063": "Task has not deleted",
 
   "errorApiModalTitle": "Connection Error",
-  "errorApiModalText": "Unable to connect to the database. Please check your internet connection and try again later."
+  "errorApiModalText": "Unable to connect to the database. Please check your internet connection and try again later.",
+
+  "notificationHead" : "Time to Get Organized",
+  "notificationBody" : "Remember to check your tasks for today"
 
 }

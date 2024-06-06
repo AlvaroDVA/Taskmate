@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:intl/intl.dart';
 import 'package:taskmate_app/models/day.dart';
 import 'package:taskmate_app/states/auth_state.dart';
 
 import '../config/app_config.dart';
-import '../models/task.dart';
 import '../models/user.dart';
 import '../services/service_locator.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +20,8 @@ class TasksApiRest {
     try {
       final response = await http.get(
         Uri.parse(url),
-        headers: {'Content-Type': 'application/json','username': user.username,
+        headers: {'Content-Type': 'application/json; charset=UTF-8',
+          'username': user.username,
           'password': user.password, 'idUser' : user.idUser, 'date' : day.toString()},
       );
 
@@ -44,9 +43,10 @@ class TasksApiRest {
 
     try {
       Map<String,dynamic> body = currentDay.toJson(currentDay);
-      final response = await http.post(
+      await http.post(
         Uri.parse(url),
-        headers: {'Content-Type': 'application/json','username': user.username,
+        headers: {'Content-Type': 'application/json; charset=UTF-8',
+          'username': user.username,
           'password': user.password},
         body: jsonEncode(<String,dynamic> {
           'idUser' : user.idUser,

@@ -76,24 +76,27 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
         backgroundColor: appConfig.theme.backgroundLoginColor,
       ),
       backgroundColor: appConfig.theme.backgroundLoginColor,
-      body: Center(
-        child: Consumer<AuthState>(
-          builder: (BuildContext context, AuthState value, Widget? child) {
-            if (authState.apiError) {
-              Future.delayed(Duration.zero, () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ApiErrorModal();
-                  },
-                );
-              });
-            }
+      body: Padding(
+        padding: EdgeInsets.all(paddingValue),
+        child: Center(
+          child: Consumer<AuthState>(
+            builder: (BuildContext context, AuthState value, Widget? child) {
+              if (authState.apiError) {
+                Future.delayed(Duration.zero, () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ApiErrorModal();
+                    },
+                  );
+                });
+              }
 
-            return _isLoading
-                ? CircularProgressIndicator(color : appConfig.theme.iconColor)
-                : _registerForm(context, paddingValue);
-          },
+              return _isLoading
+                  ? CircularProgressIndicator(color : appConfig.theme.iconColor)
+                  : _registerForm(context, paddingValue);
+            },
+          ),
         ),
       ),
     );
