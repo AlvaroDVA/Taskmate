@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:taskmate_app/states/tasks_loaded_state.dart';
 
 import '../../../config/app_config.dart';
 import '../../../models/elementTasks/sublist.dart';
@@ -13,6 +16,11 @@ class SublistElementState extends State<ElementTaskWidget> {
   final SublistElement element;
   late final AppConfig appConfig;
   late List<TextEditingController> _sublistControllers;
+  late List<Timer?> _debounceTimers = List.empty(growable: true);
+  Timer? _debounceTimer;
+
+  TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
+
 
   SublistElementState({
     required this.element,
@@ -21,6 +29,18 @@ class SublistElementState extends State<ElementTaskWidget> {
     _sublistControllers = element.sublist.map((subElement) {
       return TextEditingController(text: subElement.text);
     }).toList();
+  }
+
+  @override
+  void initState() {
+    _debounceTimers = List<Timer?>.filled(element.sublist.length, null, growable: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -64,6 +84,7 @@ class SublistElementState extends State<ElementTaskWidget> {
                       setState(() {
                         element.sublist.add(Sublist(text: "", isChecked: false));
                         _sublistControllers.add(TextEditingController(text: element.sublist.last.text));
+                        _debounceTimers.add(null);
                       });
                     },
                     icon: Icon(Icons.add)),
@@ -104,11 +125,7 @@ class SublistElementState extends State<ElementTaskWidget> {
                     Expanded(
                       child: TextField(
                         controller: _sublistControllers[index],
-                        onEditingComplete: () {
-                          setState(() {
-                            element.sublist[index].text = _sublistControllers[index].text;
-                          });
-                        },
+                        onChanged: (newText) => _onTextChanged(newText, index),
                         style: appConfig.theme.text,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -154,12 +171,7 @@ class SublistElementState extends State<ElementTaskWidget> {
           Expanded(
             child: TextField(
               controller: TextEditingController(text: element.title),
-              onEditingComplete: () {
-                setState(() {
-                  element.title = element.title;
-                  print(element.title);
-                });
-              },
+              onChanged: _onTitleChanged,
               style: appConfig.theme.title,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)!.sublistHint,
@@ -183,5 +195,23 @@ class SublistElementState extends State<ElementTaskWidget> {
         ],
       ),
     );
+  }
+
+  void _onTextChanged(String newText, int index) {
+    if (_debounceTimers[index]?.isActive ?? false) _debounceTimers[index]?.cancel();
+    _debounceTimers[index] = Timer(Duration(milliseconds: 500), () {
+      setState(() {
+        element.sublist[index].text = newText;
+      });
+    });
+
+  }
+
+  void _onTitleChanged(String newText) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
+    _debounceTimer = Timer(Duration(milliseconds: 500), () {
+      element.title = newText;
+      tasksLoadedState.saveCurrentTask();
+    });
   }
 }

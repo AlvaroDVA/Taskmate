@@ -28,6 +28,7 @@ class Task {
       print("No elements");
     }
     print(json['colorHex']);
+
     return Task(
       idTask: json['idTask'],
       title: json['title'],
@@ -43,7 +44,7 @@ class Task {
     for (var element in elementList) {
       elementsJson.add(element.toJson());
     }
-
+    print(title);
     return {
       'idTask': idTask,
       'title': title,

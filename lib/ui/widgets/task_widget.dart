@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
@@ -37,9 +39,11 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
   AppConfig appConfig = ServiceLocator.appConfig;
   TextEditingController textEditingController = TextEditingController();
   TasksLoadedState tasksLoadedState = ServiceLocator.taskLoadedState;
+  Timer? _debounceTimer;
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -107,10 +111,7 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
                       border: InputBorder.none,
                       hintText: AppLocalizations.of(context)!.textFieldHint
                     ),
-                    onEditingComplete: () {
-                      task.title = textEditingController.text;
-                      tasksLoadedState.saveCurrentTask();
-                    },
+                    onChanged: _onTextChanged,
                   ),
                 ),
                 Transform.scale(
@@ -231,6 +232,13 @@ class _TaskWidget extends State<TaskWidget> with WidgetsBindingObserver {
     );
   }
 
+  void _onTextChanged(String newText) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
+    _debounceTimer = Timer(Duration(milliseconds: 500), () {
+      widget.actualTask.title = newText;
+      tasksLoadedState.saveCurrentTask();
+    });
+  }
 
 }
 
