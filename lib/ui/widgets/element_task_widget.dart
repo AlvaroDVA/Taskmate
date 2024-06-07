@@ -4,16 +4,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:taskmate_app/exceptions/tasks_exceptions.dart';
 import 'package:taskmate_app/models/elementTasks/element_task.dart';
 import 'package:taskmate_app/models/elementTasks/sublist_element.dart';
 import 'package:taskmate_app/models/elementTasks/text_element.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:taskmate_app/services/service_locator.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../config/app_config.dart';
 import '../../models/elementTasks/image_element.dart';
@@ -174,169 +170,17 @@ class _TextElementState extends State<ElementTaskWidget>{
 }
 
 class _VideoElementState extends State<ElementTaskWidget> {
-  YoutubePlayerController? _youtubeController;
-  late final WebViewController _webViewController;
+
   VideoElementOwn element;
 
   _VideoElementState({required this.element});
 
   @override
-  void initState() {
-    super.initState();
-    _webViewController = WebViewController();
-    if (element.video != null) {
-      if (_isYouTubeUrl(element.video!)) {
-        _initializeYouTubeVideo(element.video!);
-      } else {
-        _initializeWebView(element.video!);
-      }
-    }
-  }
-
-  bool _isYouTubeUrl(String url) {
-    return YoutubePlayer.convertUrlToId(url) != null;
-  }
-
-  void _initializeYouTubeVideo(String url) {
-    _youtubeController = YoutubePlayerController(
-      initialVideoId: YoutubePlayer.convertUrlToId(url)!,
-      flags: YoutubePlayerFlags(
-        autoPlay: false,
-      ),
-    );
-  }
-
-  void _initializeWebView(String url) {
-    _webViewController
-      ..loadRequest(Uri.parse(url))
-      ..setJavaScriptMode(JavaScriptMode.unrestricted);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (element.video == null) {
-          _selectVideo();
-        } else {
-          _togglePlayPause();
-        }
-      },
-      onLongPress: () {
-        if (element.video != null) {
-          _deleteVideo();
-        }
-      },
-      child: Center(
-        child: Container(
-          height: 200,
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            border: Border.all(color: Colors.black54),
-          ),
-          child: element.video != null
-              ? _isYouTubeUrl(element.video!)
-              ? YoutubePlayer(
-            controller: _youtubeController!,
-            showVideoProgressIndicator: true,
-          )
-              : WebViewWidget(
-            controller: _webViewController,
-          )
-              : Center(
-            child: Text(
-              AppLocalizations.of(context)!.videoSelectorText,
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-        ),
-      ),
-    );
+    return Text("");
+
   }
 
-  Future<void> _deleteVideo() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.deleteVideoTitle),
-        content: Text(AppLocalizations.of(context)!.deleteVideoContent),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text("Delete"),
-          ),
-        ],
-      ),
-    );
 
-    if (confirmed != null && confirmed) {
-      setState(() {
-        element.video = null;
-        _youtubeController?.pause();
-        _webViewController.clearCache();
-      });
-    }
-  }
-
-  void _togglePlayPause() {
-    setState(() {
-      if (_youtubeController != null) {
-        if (_youtubeController!.value.isPlaying) {
-          _youtubeController!.pause();
-        } else {
-          _youtubeController!.play();
-        }
-      } else {
-        // Handle WebView pause/play logic if needed
-      }
-    });
-  }
-
-  Future<void> _selectVideo() async {
-    // Implement your video URL selection logic here
-    // For example, you might show a dialog to enter a URL
-    final urlController = TextEditingController();
-    final enteredUrl = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Enter Video URL"),
-        content: TextField(
-          controller: urlController,
-          decoration: InputDecoration(hintText: "Enter video URL"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(urlController.text),
-            child: Text("OK"),
-          ),
-        ],
-      ),
-    );
-
-    if (enteredUrl != null && enteredUrl.isNotEmpty) {
-      setState(() {
-        element.video = enteredUrl;
-        if (_isYouTubeUrl(enteredUrl)) {
-          _initializeYouTubeVideo(enteredUrl);
-        } else {
-          _initializeWebView(enteredUrl);
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _youtubeController?.dispose();
-    super.dispose();
-  }
 }
 
