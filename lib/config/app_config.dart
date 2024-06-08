@@ -50,7 +50,6 @@ class AppConfig extends ChangeNotifier{
       final defaultProperties = '''
         theme=light
         language=english
-        actualUser=None
         urlApi = http://taskmate.ddns.net:15556
         ''';
       await file.writeAsString(defaultProperties);

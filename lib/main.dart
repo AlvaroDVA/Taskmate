@@ -38,7 +38,7 @@ Future<void> main() async {
       size: Size(1000, 700),
       center: true,
       skipTaskbar: false,
-      title: 'Flutter Window Manager',
+      title: 'TaskMate App',
       titleBarStyle: TitleBarStyle.normal,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -99,7 +99,8 @@ class MyApp extends StatelessWidget {
           return Consumer<AuthState>(
             builder: (context1, authState, child) {
               return MaterialApp(
-                title: 'Flutter Demo',
+                debugShowCheckedModeBanner: false,
+                title: 'TaskMate App',
                 locale: appConfig.locale,
                 localizationsDelegates: const [
                   AppLocalizations.delegate,

@@ -3,16 +3,14 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../models/elementTasks/video_element.dart';
 import '../element_task_widget.dart';
 
 class VideoElementState extends State<ElementTaskWidget> {
   VideoElementOwn element;
-  late final WebViewController webViewController;
+  //late final WebViewController webViewController;
 
   VideoElementState({
     required this.element
@@ -21,14 +19,14 @@ class VideoElementState extends State<ElementTaskWidget> {
   @override
   void initState() {
     super.initState();
-    webViewController = WebViewController()
-      ..loadRequest(Uri.parse(element.video != null ? element.video! : ""));
+    //webViewController = WebViewController()
+      //..loadRequest(Uri.parse(element.video != null ? element.video! : ""));
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return WebViewWidget(controller: webViewController);
+    return Text("");
+    //return //WebViewWidget(controller: webViewController);
   }
 
 

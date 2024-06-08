@@ -96,7 +96,7 @@ class SublistElementState extends State<ElementTaskWidget> {
 
   Padding sublistBody(double _padding) {
     return Padding(
-      padding: EdgeInsets.all(_padding),
+      padding: EdgeInsets.all(_padding / 2),
       child: Container(
         decoration: BoxDecoration(
           color: appConfig.theme.sublistColor,
@@ -113,17 +113,18 @@ class SublistElementState extends State<ElementTaskWidget> {
           ],
         ),
         child: SizedBox(
-          height: (72.0 * element.sublist.length),
+          height: (60.0 * element.sublist.length),
           child: ListView.separated(
             itemCount: element.sublist.length,
-            separatorBuilder: (_, index) => SizedBox(height: _padding),
+            separatorBuilder: (_, index) => SizedBox(height: _padding / 2),
             itemBuilder: (_, index) {
               return Padding(
-                padding: EdgeInsets.all(_padding / 1.25),
+                padding: EdgeInsets.all(_padding / 3),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
+                        maxLines: null,
                         controller: _sublistControllers[index],
                         onChanged: (newText) => _onTextChanged(newText, index),
                         style: appConfig.theme.text,
