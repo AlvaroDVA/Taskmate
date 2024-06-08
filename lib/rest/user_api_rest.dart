@@ -135,7 +135,6 @@ class UserApiRest {
         );
 
         if (response.statusCode == 200) {
-          print('Avatar actualizado correctamente');
         } else {
           print('Error al actualizar el avatar: ${response.body}');
         }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:taskmate_app/config/app_config.dart';
 import 'package:taskmate_app/enums/app_theme.dart';
 import 'package:taskmate_app/services/service_locator.dart';
@@ -43,32 +44,36 @@ class SettingScreenState extends State<SettingsScreeen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            color: appConfig.theme.greyColor,
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _openAvatarChangeDialog();
-                  },
-                  child: CircleAvatar(
-                    backgroundImage: FileImage(authState.currentUser!.avatar),
-                    radius: 50,
-                  ),
+          Consumer<AuthState>(
+            builder: (BuildContext context, AuthState auth, Widget? child) {
+              return Container(
+                color: appConfig.theme.greyColor,
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _openAvatarChangeDialog();
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: FileImage(auth.currentUser!.avatar),
+                        radius: 50,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      auth.currentUser!.username,
+                      style: appConfig.theme.text,
+                    ),
+                    Text(
+                      auth.currentUser!.email,
+                      style: appConfig.theme.text,
+                    ),
+                  ],
                 ),
-                SizedBox(height: 10),
-                Text(
-                  authState.currentUser!.username,
-                  style: appConfig.theme.text,
-                ),
-                Text(
-                  authState.currentUser!.email,
-                  style: appConfig.theme.text,
-                ),
-              ],
-            ),
+              );
+            },
           ),
           // Opciones de configuración
           Expanded(
@@ -214,6 +219,7 @@ class SettingScreenState extends State<SettingsScreeen> {
                   Spacer(),
                   TextButton(
                     onPressed: () {
+                      authState.setErrorMessage(null);
                       Navigator.of(context).pop(true);
                     },
                     child: Text(AppLocalizations.of(context)!.cancelButton),

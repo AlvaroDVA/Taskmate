@@ -75,7 +75,9 @@ class MainMenuState extends State<MainMenu> {
                 setState(() async {
                   await taskLoadedState.saveCurrentTask();
                   await taskLoadedState.setCurrentDay(DateTime.now());
+                  taskLoadedState.setErrorMessage(null);
                   await authState.logoutUser();
+                  screenState.clearScreen();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
