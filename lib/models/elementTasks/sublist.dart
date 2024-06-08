@@ -1,3 +1,5 @@
+import 'package:taskmate_app/utils/tasks_utils.dart';
+
 class Sublist {
 
   String text;
@@ -10,7 +12,7 @@ class Sublist {
 
   factory Sublist.fromJson(Map<String, dynamic> json) {
     return Sublist(
-        text: json['text'],
+        text: TasksUtils.traducirCaracteres(json['text']),
         isChecked: json['isChecked']
     );
   }

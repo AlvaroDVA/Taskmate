@@ -41,12 +41,19 @@ class TasksUtils {
 
   }
 
-  static TextElement textElementFromJson(Map<String, dynamic> json) =>
-      TextElement(
-          elementId: json['elementId'],
-          taskOrder: json['taskOrder'],
-          text: json['text']
-      );
+  static TextElement textElementFromJson(Map<String, dynamic> json) {
+
+    String decodedText = traducirCaracteres(json['text']);
+
+    return TextElement(
+        elementId: json['elementId'],
+        taskOrder: json['taskOrder'],
+        text: decodedText
+    );// Debería imprimir el texto correctamente decodificado
+  }
+
+
+
 
   static VideoElementOwn videoElementFromJson(Map<String, dynamic> json) {
     return VideoElementOwn(
@@ -69,12 +76,18 @@ class TasksUtils {
     return SublistElement(
         elementId: json['elementId'],
         taskOrder: json['taskOrder'],
-        title: json['title'],
+        title: traducirCaracteres(json['title']),
         sublist: sublist
     );
   }
 
+ static String traducirCaracteres(String json) {
+   String encodedText = json;
 
+   List<int> latin1Bytes = latin1.encode(encodedText);
+   String decodedText = utf8.decode(latin1Bytes);
+   return decodedText;
+ }
 
 
 }

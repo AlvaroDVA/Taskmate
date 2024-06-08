@@ -1,4 +1,5 @@
 import '../enums/color_task.dart';
+import '../utils/tasks_utils.dart';
 import 'elementTasks/element_task.dart';
 
 class Task {
@@ -31,7 +32,7 @@ class Task {
 
     return Task(
       idTask: json['idTask'],
-      title: json['title'],
+      title: TasksUtils.traducirCaracteres(json['title']),
       isChecked: json['isChecked'],
       hexColor: ColorTask.values.firstWhere((color) => color.hex == json['colorHex']),
       elementList: elements,
