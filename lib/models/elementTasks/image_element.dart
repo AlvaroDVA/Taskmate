@@ -28,7 +28,6 @@ class ImageElement extends ElementTask {
       "taskOrder" : taskOrder,
       "image" : null
     };
-
   }
 
 }

@@ -43,7 +43,6 @@ class TasksApiRest {
 
     try {
       Map<String,dynamic> body = currentDay.toJson(currentDay);
-      print("AAAAAAAAAAAAAAAA${body['todayTasks']}");
       await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json; charset=UTF-8',

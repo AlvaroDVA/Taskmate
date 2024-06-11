@@ -21,7 +21,6 @@ abstract class ElementTask {
     if (json.containsKey("image")) {
       return TasksUtils.imageElementFromJson(json);
     } else {
-      // Manejar el resto de los elementos de manera síncrona
       if (json['text'] != null) {
         return TasksUtils.textElementFromJson(json);
       } else if (json.containsKey("video")) {
@@ -35,8 +34,5 @@ abstract class ElementTask {
   }
 
   Map<String, dynamic> toJson();
-
-
-
 
 }

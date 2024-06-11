@@ -22,19 +22,15 @@ class Task {
     List<ElementTask> elements = [];
     if (json['elementList'] != null) {
       json['elementList'].forEach((elementJson) {
-        print(elementJson.toString());
         elements.add(ElementTask.fromJson(elementJson));
       });
-    } else {
-      print("No elements");
     }
-    print(json['colorHex']);
-
     return Task(
       idTask: json['idTask'],
       title: TasksUtils.traducirCaracteres(json['title']),
       isChecked: json['isChecked'],
-      hexColor: ColorTask.values.firstWhere((color) => color.hex == json['colorHex']),
+      hexColor: ColorTask.values.firstWhere(
+              (color) => color.hex == json['colorHex']),
       elementList: elements,
     );
   }
@@ -57,7 +53,7 @@ class Task {
 
   @override
   String toString() {
-    return "idTask : ${idTask} "
+    return "idTask : $idTask "
         "title : $title "
         "isChecked : $isChecked "
         "colorHex : $hexColor "

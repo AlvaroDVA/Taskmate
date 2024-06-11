@@ -10,9 +10,7 @@ class DayController {
   DayService dayService = ServiceLocator.dayService;
 
   Future<Day> loadDayTasks(User usuario, DateTime date) async {
-    var res = await dayService.loadDayTasks(usuario, DateFormat('yyyy-MM-dd').format(date));
-    print(res.todayTasks);
-    return res;
+    return await dayService.loadDayTasks(usuario, DateFormat('yyyy-MM-dd').format(date));
   }
 
   Future<void> saveDay(Day currentDay, User? currentUser) async {

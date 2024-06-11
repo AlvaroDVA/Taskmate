@@ -27,6 +27,6 @@ class UserController {
   }
 
   Future<void> updateAvatar(User? currentUser) async {
-    await _userService.updateAvar(currentUser);
+    await _userService.updateAvatar(currentUser);
   }
 }

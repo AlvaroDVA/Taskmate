@@ -37,7 +37,8 @@ class CalendarScreenState extends State<CalendarScreen>{
     return Scaffold(
       drawer: MainMenu(),
       backgroundColor: appConfig.theme.primaryColor,
-      appBar: SimpleAppbar(text: AppLocalizations.of(context)!.calendarPageTitle),
+      appBar: SimpleAppbar(text: AppLocalizations.of
+        (context)!.calendarPageTitle),
       body: Center(
         child: Column(
           children: [

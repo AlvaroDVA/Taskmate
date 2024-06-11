@@ -45,7 +45,6 @@ class NotebookApiRest {
       List<Map<String, dynamic>> list = [];
       pages.forEach((page) {
         list.add(page.toJson());
-        print(page.text);
       });
 
       final response = await http.post(

@@ -17,12 +17,9 @@ class TasksUtils {
    if (image != null) {
      Uint8List base64Data = base64Decode(image);
 
-     // Obteniendo el directorio temporal de forma síncrona
      Directory tempDir = Directory.systemTemp;
-     // Generando un nombre único para el archivo
      String tempPath = '${tempDir.path}/temp_image.png';
 
-     // Escribir los datos de imagen en el archivo temporal
      File tempFile = File(tempPath);
      tempFile.writeAsBytesSync(base64Data);
 
@@ -42,20 +39,19 @@ class TasksUtils {
   }
 
   static TextElement textElementFromJson(Map<String, dynamic> json) {
-
     String decodedText = traducirCaracteres(json['text']);
-
     return TextElement(
         elementId: json['elementId'],
         taskOrder: json['taskOrder'],
         text: decodedText
-    );// Debería imprimir el texto correctamente decodificado
+    );
   }
 
 
 
 
-  static VideoElementOwn videoElementFromJson(Map<String, dynamic> json) {
+  static VideoElementOwn videoElementFromJson(
+      Map<String, dynamic> json) {
     return VideoElementOwn(
       elementId: json['elementId'],
       taskOrder: json['taskOrder'],
@@ -81,13 +77,8 @@ class TasksUtils {
     );
   }
 
- static String traducirCaracteres(String json) {
-   String encodedText = json;
+ static String traducirCaracteres(String cadena) => utf8.decode(latin1.encode(cadena));
 
-   List<int> latin1Bytes = latin1.encode(encodedText);
-   String decodedText = utf8.decode(latin1Bytes);
-   return decodedText;
- }
 
 
 }

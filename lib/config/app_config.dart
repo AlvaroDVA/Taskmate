@@ -27,7 +27,6 @@ class AppConfig extends ChangeNotifier{
 
 
   AppConfig() {
-
     initialize();
   }
 
@@ -47,7 +46,7 @@ class AppConfig extends ChangeNotifier{
    Future<void> loadProperties() async {
     File file = File(rutaArchivo);
     if (!file.existsSync()) {
-      final defaultProperties = '''
+      const defaultProperties = '''
         theme=light
         language=english
         urlApi = http://taskmate.ddns.net:15556
@@ -102,16 +101,16 @@ class AppConfig extends ChangeNotifier{
      notifyListeners();
    }
 
+   Future<void> changeTheme(CustomTheme theme) async {
+     properties['theme'] = theme.name;
+     this.theme = theme;
+     await _loadLocale(language);
+     await saveProperties();
+     notifyListeners();
+   }
+
    Future<void> saveProperties() async {
      properties.saveToFile(rutaArchivo);
    }
-
-  Future<void> changeTheme(CustomTheme theme) async {
-    properties['theme'] = theme.name;
-    this.theme = theme;
-    await _loadLocale(language);
-    await saveProperties();
-    notifyListeners();
-  }
 
 }

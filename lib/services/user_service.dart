@@ -30,7 +30,7 @@ class UserService {
     return await userApiRest.deleteUser(currentUser);
   }
 
-  Future<void> updateAvar(User? currentUser) async {
+  Future<void> updateAvatar(User? currentUser) async {
     await userApiRest.updateAvatar(currentUser);
   }
 

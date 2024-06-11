@@ -195,9 +195,9 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
   }
 
   Future<void> _initialice() async {
-
     await authState.checkIsLogged();
-    await tasksLoadedState.loadCurrentDay(tasksLoadedState.currentDay.date);
+    await tasksLoadedState.loadCurrentDay
+      (tasksLoadedState.currentDay.date);
     WidgetsBinding.instance.addObserver(this);
     windowManager.setPreventClose(true);
     windowManager.addListener(this);

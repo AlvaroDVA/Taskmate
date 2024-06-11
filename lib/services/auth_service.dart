@@ -9,7 +9,6 @@ class AuthService {
 
     final bytes = utf8.encode(password);
     final hashedBytes = sha256.convert([...salt, ...bytes]);
-    print(hashedBytes.toString());
     return hashedBytes.toString();
   }
 
