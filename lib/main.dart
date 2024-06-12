@@ -46,9 +46,9 @@ Future<void> main() async {
       await windowManager.focus();
     });
   } else if (Platform.isAndroid) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
-
+  ServiceLocator.appConfig.initialize();
   runApp(MyApp());
 }
 
@@ -99,6 +99,7 @@ class MyApp extends StatelessWidget {
           return Consumer<AuthState>(
             builder: (context1, authState, child) {
               return MaterialApp(
+                checkerboardOffscreenLayers: false,
                 debugShowCheckedModeBanner: false,
                 title: 'TaskMate App',
                 locale: appConfig.locale,

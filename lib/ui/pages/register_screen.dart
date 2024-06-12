@@ -68,6 +68,7 @@ class RegisterScreenState extends State<RegisterScreen> with WidgetsBindingObser
     double paddingValue = 20.0;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
             AppLocalizations.of(context)!.registerText,

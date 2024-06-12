@@ -10,6 +10,40 @@ import 'package:http/http.dart' as http;
 
 class UserApiRest {
 
+  Future<void> deleteUser(User? currentUser) async {
+    try {
+      String url = "${appConfig.urlApi}/users";
+
+      if (currentUser != null) {
+        Map<String, String> userData = {
+          'idUser': currentUser.idUser,
+        };
+
+        Map<String, String> headers = {
+          'username': currentUser.username,
+          'password': currentUser.password,
+          'Content-Type': 'application/json',
+        };
+
+        http.Response response = await http.delete(
+          Uri.parse(url),
+          headers: headers,
+          body: jsonEncode(userData),
+        );
+
+        if (response.statusCode == 200) {
+          print('Usuario eliminado correctamente');
+        } else {
+          print('Error al eliminar el usuario: ${response.statusCode}');
+        }
+      }
+    } on SocketException {
+      authState.setApiError(true);
+      throw Exception('Error al eliminar usuario');
+    }
+
+  }
+
   final AppConfig appConfig = ServiceLocator.appConfig;
   final AuthState authState = ServiceLocator.authState;
 
@@ -73,39 +107,7 @@ class UserApiRest {
     return avatarBase64;
   }
 
-  Future<void> deleteUser(User? currentUser) async {
-    try {
-      String url = "${appConfig.urlApi}/users";
 
-      if (currentUser != null) {
-        Map<String, String> userData = {
-          'idUser': currentUser.idUser,
-        };
-
-        Map<String, String> headers = {
-          'username': currentUser.username,
-          'password': currentUser.password,
-          'Content-Type': 'application/json',
-        };
-
-        http.Response response = await http.delete(
-          Uri.parse(url),
-          headers: headers,
-          body: jsonEncode(userData),
-        );
-
-        if (response.statusCode == 200) {
-          print('Usuario eliminado correctamente');
-        } else {
-          print('Error al eliminar el usuario: ${response.statusCode}');
-        }
-      }
-    } on SocketException {
-      authState.setApiError(true);
-      throw Exception('Error al eliminar usuario');
-    }
-
-  }
 
   Future<void> updateAvatar(User? currentUser) async {
     String url = "${appConfig.urlApi}/users";

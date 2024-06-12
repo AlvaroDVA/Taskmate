@@ -65,6 +65,7 @@ class LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver, W
     double paddingValue = 20.0;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
             AppLocalizations.of(context)!.loginText,

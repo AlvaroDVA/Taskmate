@@ -8,14 +8,15 @@ import '../models/day.dart';
 
 class TasksLoadedState extends ChangeNotifier {
 
-  final DayController _dayController = ServiceLocator.dayController;
-  final AuthState _authState = ServiceLocator.authState;
-
   Day? _currentDay;
   String? _errorMessage;
 
   String? get errorMessage => _errorMessage;
   Day get currentDay => _currentDay ?? Day(date: DateTime.now(), todayTasks: [], loaded: false);
+
+
+  final DayController _dayController = ServiceLocator.dayController;
+  final AuthState _authState = ServiceLocator.authState;
 
   bool isLoaded = false;
 

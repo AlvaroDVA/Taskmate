@@ -48,6 +48,7 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver, WindowL
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: LayoutBuilder(
         builder: (context1, constraints) {
           if (constraints.maxWidth > 650) {
@@ -61,7 +62,9 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver, WindowL
                   flex: 3,
                   child: Consumer<ScreenState>(
                       builder: (BuildContext context, ScreenState screenState, Widget? child) {
-                        return screenState.actualScreen;
+                        return OverflowBox(
+                          child: screenState.actualScreen,
+                        );
                       }
                   ),
                 ),

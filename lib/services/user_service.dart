@@ -8,6 +8,10 @@ import 'package:taskmate_app/services/service_locator.dart';
 
 class UserService {
 
+  Future<void> deleteUser(User? currentUser) async {
+    return await userApiRest.deleteUser(currentUser);
+  }
+
   final UserApiRest userApiRest = ServiceLocator.userApiRest;
 
   Future<Map<String, dynamic>> LoginUser (String username, String password) async {
@@ -26,9 +30,7 @@ class UserService {
     return await userApiRest.registerUser(uuid, username, hashPassword, email, avatar);
   }
 
-  Future<void> deleteUser(User? currentUser) async {
-    return await userApiRest.deleteUser(currentUser);
-  }
+
 
   Future<void> updateAvatar(User? currentUser) async {
     await userApiRest.updateAvatar(currentUser);

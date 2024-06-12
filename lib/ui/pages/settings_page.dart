@@ -37,7 +37,10 @@ class SettingScreenState extends State<SettingsScreeen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final breakpoint = 650.0;
     return Scaffold(
+      drawerEnableOpenDragGesture: screenWidth < breakpoint,
       drawer: MainMenu(),
       backgroundColor: appConfig.theme.primaryColor,
       appBar: SimpleAppbar(text : AppLocalizations.of(context)!.settingsPageTitle),

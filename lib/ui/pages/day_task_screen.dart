@@ -71,7 +71,12 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
   @override
   Widget build(BuildContext context) {
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final breakpoint = 650.0;
+
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      drawerEnableOpenDragGesture: screenWidth < breakpoint,
       drawer: MainMenu(),
       appBar: DayChanger(),
       body: Container(
@@ -111,8 +116,10 @@ class _DayTaskScreenState extends State<DayTaskScreen> with WidgetsBindingObserv
                     )
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: appConfig.theme.iconColor,
+                    ),
                   );
                 }
               },

@@ -8,6 +8,11 @@ import '../services/user_service.dart';
 
 
 class UserController {
+
+  Future<void> deleteUser(User? currentUser) async {
+    return await _userService.deleteUser(currentUser);
+  }
+
   final UserService _userService = ServiceLocator.userService;
 
   Future<Map<String, dynamic>> loginUser(String username, String password) async {
@@ -22,9 +27,7 @@ class UserController {
     );
   }
 
-  Future<void> deleteUser(User? currentUser) async {
-    return await _userService.deleteUser(currentUser);
-  }
+
 
   Future<void> updateAvatar(User? currentUser) async {
     await _userService.updateAvatar(currentUser);

@@ -36,10 +36,13 @@ class NotebookScreenState extends State<NotebookScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final breakpoint = 650.0;
     return Consumer<NotebookState>(
       builder: (context, notebookState, child) {
         if (notebookState.pages.isEmpty) {
           return Scaffold(
+            drawerEnableOpenDragGesture: screenWidth < breakpoint,
             backgroundColor: appconfig.theme.notebookBackgroundColor,
             body: Center(
               child: CircularProgressIndicator(),
@@ -47,6 +50,8 @@ class NotebookScreenState extends State<NotebookScreen> {
           );
         } else {
           return Scaffold(
+            drawerEnableOpenDragGesture: screenWidth < breakpoint,
+            resizeToAvoidBottomInset: false,
             backgroundColor: appconfig.theme.notebookBackgroundColor,
             drawer: MainMenu(),
             appBar: NotebookBarWidget(),
@@ -69,7 +74,7 @@ class NotebookScreenState extends State<NotebookScreen> {
                       notebookState.goToPage(index);
                     },
                     itemBuilder: (context, index) {
-                      return PageNotebookWidget();
+                      return OverflowBox(child: PageNotebookWidget());
                     },
                   ),
                   if (notebookState.currentPageIndex > 0)
